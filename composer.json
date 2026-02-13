@@ -1,0 +1,16 @@
+{
+  "name": "vitrina/vitrina-web",
+  "description": "Sistema de Gestión la vitrina (Web)",
+  "type": "project",
+  "license": "proprietary",
+  "minimum-stability": "stable",
+  "require": {
+    "php": ">=8.2",
+    "ext-pdo": "*"
+  },
+  "autoload": {
+    "psr-4": {
+      "Vitrina\\": "src/"
+    }
+  }
+}

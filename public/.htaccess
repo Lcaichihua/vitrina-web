@@ -1,0 +1,20 @@
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+
+    # Establece la base para las redirecciones.
+    # Si tu proyecto está en la raíz del dominio, usa /
+    # Si está en una subcarpeta (ej. tudominio.com/vitrina), usa /vitrina/public/
+    RewriteBase /
+
+    # Si el archivo solicitado NO existe físicamente...
+    RewriteCond %{REQUEST_FILENAME} !-f
+
+    # ...y si el directorio solicitado NO existe físicamente...
+    RewriteCond %{REQUEST_FILENAME} !-d
+
+    # ...entonces redirige todo el tráfico al index.php
+    RewriteRule ^ index.php [L,QSA]
+</IfModule>
+
+# Opcional: Prevenir que se listen los contenidos de los directorios si no hay index
+Options -Indexes

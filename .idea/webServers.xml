@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="WebServers">
+    <option name="servers">
+      <webServer id="4a7f5c10-c9c4-4ff6-b086-7ae1436e31f6" name="My Hosting La Vitrina" url="http://lavitrina.com.pe">
+        <fileTransfer accessType="FTPS" host="lavitrina.com.pe" port="21">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" connections="20" shareSSLContext="true" />
+          </advancedOptions>
+        </fileTransfer>
+        <option name="numberOfConnections" value="20" />
+      </webServer>
+    </option>
+  </component>
+</project>
