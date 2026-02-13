@@ -27,6 +27,21 @@
                     <a href="#" class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
                         Contratos
                     </a>
+                    <!-- Nuevo elemento de menú con sub-menú -->
+                    <div class="relative group inline-flex">
+                        <a href="#" id="maintenance-dropdown-toggle" class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium focus:outline-none">
+                            Mantenimiento
+                            <svg class="ml-2 -mr-0.5 h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                            </svg>
+                        </a>
+                        <div id="maintenance-dropdown-menu" class="absolute z-10 left-0 top-full w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none hidden">
+                            <div class="py-1" role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
+                                <a href="/mantenimiento/tipo_puesto_comercial" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900" role="menuitem">Tipo puesto comercial</a>
+                                <a href="/mantenimiento/puesto_comercial" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900" role="menuitem">Puesto comercial</a>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
             <!-- Información del Usuario -->
@@ -81,5 +96,25 @@
     </div>
 </div>
 
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const toggleButton = document.getElementById('maintenance-dropdown-toggle');
+            const dropdownMenu = document.getElementById('maintenance-dropdown-menu');
+
+            if (toggleButton && dropdownMenu) {
+                toggleButton.addEventListener('click', function(event) {
+                    event.preventDefault(); // Evitar el comportamiento predeterminado del enlace
+                    dropdownMenu.classList.toggle('hidden');
+                });
+
+                // Cerrar el dropdown si se hace clic fuera de él
+                document.addEventListener('click', function(event) {
+                    if (!dropdownMenu.contains(event.target) && !toggleButton.contains(event.target)) {
+                        dropdownMenu.classList.add('hidden');
+                    }
+                });
+            }
+        });
+    </script>
 </body>
 </html>
