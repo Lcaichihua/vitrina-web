@@ -445,3 +445,18 @@ CREATE TABLE `CONTRATO_ARRENDADOR` (
 
 INSERT INTO wptvxhei_ventas.CONTRATO_ARRENDADOR (id_empresa,docident_id,numero_documento,abreviatura,nombres,apellidos,depaid,provid,distid,direccion,telefono,nombre_concesionario_razon_social,fecha_desde,fecha_hasta,usuing,fechaing,usumod,fechamod,estado) VALUES
 	 (1,1,'42213698','SR.','PRUEBA','PRUEBA',15,127,1267,'.',NULL,NULL,'2025-08-03 00:00:00','2028-12-31 00:00:00','LUCIA','2025-08-04 00:52:14','LUCIA','2026-02-05 20:43:04',1);
+
+
+CREATE TABLE `TIPODOCIDENTIDAD` (
+  `docident_id` int(11) NOT NULL,
+  `descripcion` varchar(50) DEFAULT NULL,
+  `abreviatura` varchar(15) DEFAULT NULL,
+  PRIMARY KEY (`docident_id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci
+
+INSERT INTO wptvxhei_ventas.TIPODOCIDENTIDAD (docident_id,descripcion,abreviatura) VALUES
+	 (1,'DOC. NACIONAL DE IDENTIDAD','D.N.I.'),
+	 (2,'REG. UNICO DE CONTRIBUYENTES','R.U.C.'),
+	 (3,'CARNET DE EXTRANJERIA','C.E.'),
+	 (4,'PASAPORTE','PASAP.'),
+	 (5,'OTROS','OTROS');
