@@ -60,13 +60,22 @@ switch ($uri) {
         $controller->puestoComercial();
         break;
 
-    case '/mantenimiento/arrendadores': // Nueva ruta
+    case '/mantenimiento/arrendadores':
         if (!isset($_SESSION['user_id'])) {
             header('Location: /');
             exit;
         }
         $controller = new MantenimientoController();
         $controller->arrendador();
+        break;
+
+    case '/mantenimiento/arrendatarios': // Nueva ruta para Arrendatarios
+        if (!isset($_SESSION['user_id'])) {
+            header('Location: /');
+            exit;
+        }
+        $controller = new MantenimientoController();
+        $controller->arrendatarios();
         break;
 
     default:

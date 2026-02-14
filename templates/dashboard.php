@@ -40,6 +40,7 @@
                                 <a href="/mantenimiento/tipo_puesto_comercial" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900" role="menuitem">Tipo puesto comercial</a>
                                 <a href="/mantenimiento/puesto_comercial" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900" role="menuitem">Puesto comercial</a>
                                 <a href="/mantenimiento/arrendadores" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900" role="menuitem">Arrendadores</a>
+                                <a href="/mantenimiento/arrendatarios" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900" role="menuitem">Arrendatarios</a>
                             </div>
                         </div>
                     </div>
