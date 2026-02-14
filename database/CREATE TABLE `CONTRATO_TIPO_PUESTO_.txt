@@ -247,3 +247,170 @@ select co.valor from control co where co.parametro='IGV';
 
 select ca.nombrecaja from caja ca where ca.id_empresa = _id_empresa and ca.nombrepc=_pcname;
 END
+
+
+
+
+CREATE TABLE `CONTRATO_PUESTO_COMERCIAL` (
+  `id_puesto_comercial` int(11) NOT NULL AUTO_INCREMENT,
+  `id_empresa` int(11) NOT NULL,
+  `id_tipo_puesto_comercial` int(11) NOT NULL,
+  `sucursalid` int(11) NOT NULL,
+  `interior` varchar(50) NOT NULL,
+  `observacion` varchar(250) NOT NULL,
+  `usuing` varchar(50) DEFAULT NULL,
+  `fechaing` datetime DEFAULT NULL,
+  `usumod` varchar(50) DEFAULT NULL,
+  `fechamod` datetime DEFAULT NULL,
+  `estado` bit(1) DEFAULT NULL,
+  PRIMARY KEY (`id_puesto_comercial`),
+  UNIQUE KEY `uq_cpc_empresa_tipo_sucursal_interior` (`id_empresa`,`id_tipo_puesto_comercial`,`sucursalid`,`interior`),
+  KEY `idx_pc_tipo` (`id_tipo_puesto_comercial`)
+) ENGINE=InnoDB AUTO_INCREMENT=107 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+
+
+INSERT INTO wptvxhei_ventas.CONTRATO_PUESTO_COMERCIAL (id_empresa,id_tipo_puesto_comercial,sucursalid,interior,observacion,usuing,fechaing,usumod,fechamod,estado) VALUES
+	 (1,1,2,'1','','LUCIA','2025-07-25 17:39:54',NULL,NULL,1),
+	 (1,1,2,'2','','LUCIA','2025-07-25 17:40:19',NULL,NULL,1),
+	 (1,2,2,'1','','LUCIA','2025-08-03 23:43:38',NULL,NULL,1),
+	 (1,2,2,'2','','LUCIA','2025-08-03 23:43:58',NULL,NULL,1),
+	 (1,2,2,'3','','LUCIA','2025-08-10 01:28:54',NULL,NULL,1),
+	 (1,2,2,'4','','LUCIA','2025-08-10 01:29:11',NULL,NULL,1),
+	 (1,2,2,'5','','LUCIA','2025-08-25 11:35:29',NULL,NULL,1),
+	 (1,2,2,'6','','LUCIA','2025-08-25 11:35:43',NULL,NULL,1),
+	 (1,2,2,'7','','LUCIA','2025-08-25 11:35:55',NULL,NULL,1),
+	 (1,2,2,'8','','LUCIA','2025-08-25 11:36:06',NULL,NULL,1);
+INSERT INTO wptvxhei_ventas.CONTRATO_PUESTO_COMERCIAL (id_empresa,id_tipo_puesto_comercial,sucursalid,interior,observacion,usuing,fechaing,usumod,fechamod,estado) VALUES
+	 (1,2,2,'9','','LUCIA','2025-08-25 11:36:18',NULL,NULL,1),
+	 (1,2,2,'10','','LUCIA','2025-08-25 11:36:51',NULL,NULL,1),
+	 (1,2,2,'11','','LUCIA','2025-08-25 11:37:04',NULL,NULL,1),
+	 (1,2,2,'12','','LUCIA','2025-08-25 11:37:17',NULL,NULL,1),
+	 (1,2,2,'13','','LUCIA','2025-08-25 11:37:30',NULL,NULL,1),
+	 (1,2,2,'14','','LUCIA','2025-08-25 11:37:49',NULL,NULL,1),
+	 (1,2,2,'15','','LUCIA','2025-08-25 11:38:06',NULL,NULL,1),
+	 (1,2,2,'16','','LUCIA','2025-08-25 11:38:17',NULL,NULL,1),
+	 (1,2,2,'17','','LUCIA','2025-08-25 11:38:40',NULL,NULL,1),
+	 (1,2,2,'18','','LUCIA','2025-08-25 11:38:57',NULL,NULL,1);
+INSERT INTO wptvxhei_ventas.CONTRATO_PUESTO_COMERCIAL (id_empresa,id_tipo_puesto_comercial,sucursalid,interior,observacion,usuing,fechaing,usumod,fechamod,estado) VALUES
+	 (1,2,2,'19','','LUCIA','2025-08-25 11:39:10',NULL,NULL,1),
+	 (1,2,2,'20','','LUCIA','2025-08-25 11:39:22',NULL,NULL,1),
+	 (1,2,2,'21','','LUCIA','2025-08-25 11:39:35',NULL,NULL,1),
+	 (1,2,2,'22','','LUCIA','2025-08-25 11:39:49',NULL,NULL,1),
+	 (1,2,2,'23','','LUCIA','2025-08-25 11:40:04',NULL,NULL,1),
+	 (1,2,2,'24','','LUCIA','2025-08-25 11:40:32',NULL,NULL,1),
+	 (1,2,2,'25','','LUCIA','2025-08-25 11:40:49',NULL,NULL,1),
+	 (1,2,2,'26','','LUCIA','2025-08-25 12:04:47',NULL,NULL,1),
+	 (1,2,2,'27','','LUCIA','2025-08-25 12:05:05',NULL,NULL,1),
+	 (1,2,2,'28','','LUCIA','2025-08-25 12:05:24',NULL,NULL,1);
+INSERT INTO wptvxhei_ventas.CONTRATO_PUESTO_COMERCIAL (id_empresa,id_tipo_puesto_comercial,sucursalid,interior,observacion,usuing,fechaing,usumod,fechamod,estado) VALUES
+	 (1,2,2,'29','','LUCIA','2025-08-25 13:48:17',NULL,NULL,1),
+	 (1,2,2,'30','','LUCIA','2025-08-25 13:49:59',NULL,NULL,1),
+	 (1,1,2,'3','','LUCIA','2025-08-25 13:50:21',NULL,NULL,1),
+	 (1,1,2,'4','','LUCIA','2025-08-25 13:50:42',NULL,NULL,1),
+	 (1,1,2,'5','','LUCIA','2025-08-25 13:50:55',NULL,NULL,1),
+	 (1,1,2,'6','','LUCIA','2025-08-25 13:51:09',NULL,NULL,1),
+	 (1,1,2,'7','','LUCIA','2025-08-25 13:51:23',NULL,NULL,1),
+	 (1,1,2,'8','','LUCIA','2025-08-25 13:51:37',NULL,NULL,1),
+	 (1,1,2,'9','','LUCIA','2025-08-25 13:51:50',NULL,NULL,1),
+	 (1,1,2,'10','','LUCIA','2025-08-25 13:52:00',NULL,NULL,1);
+INSERT INTO wptvxhei_ventas.CONTRATO_PUESTO_COMERCIAL (id_empresa,id_tipo_puesto_comercial,sucursalid,interior,observacion,usuing,fechaing,usumod,fechamod,estado) VALUES
+	 (1,1,2,'11','','LUCIA','2025-08-25 13:52:21',NULL,NULL,1),
+	 (1,1,2,'12','','LUCIA','2025-08-25 13:52:34',NULL,NULL,1),
+	 (1,1,2,'14','','LUCIA','2025-08-25 13:52:47',NULL,NULL,1),
+	 (1,1,2,'15','','LUCIA','2025-08-25 13:54:32',NULL,NULL,1),
+	 (1,1,2,'16','','LUCIA','2025-08-25 13:54:47',NULL,NULL,1),
+	 (1,1,2,'17','','LUCIA','2025-08-25 13:56:05',NULL,NULL,1),
+	 (1,1,2,'18','','LUCIA','2025-08-25 13:56:24',NULL,NULL,1),
+	 (1,1,2,'13','','LUCIA','2025-08-25 13:56:40','LUCIA','2025-09-24 12:12:39',1),
+	 (1,2,2,'31','','LUCIA','2025-08-25 13:59:01',NULL,NULL,1),
+	 (1,2,2,'32','','LUCIA','2025-08-25 13:59:24',NULL,NULL,1);
+INSERT INTO wptvxhei_ventas.CONTRATO_PUESTO_COMERCIAL (id_empresa,id_tipo_puesto_comercial,sucursalid,interior,observacion,usuing,fechaing,usumod,fechamod,estado) VALUES
+	 (1,2,2,'33','','LUCIA','2025-08-25 14:00:42',NULL,NULL,1),
+	 (1,2,2,'34','','LUCIA','2025-08-27 17:18:24',NULL,NULL,1),
+	 (1,2,2,'35','','LUCIA','2025-08-27 17:18:58',NULL,NULL,1),
+	 (1,2,2,'36','','LUCIA','2025-08-27 17:19:16',NULL,NULL,1),
+	 (1,2,2,'37','','LUCIA','2025-08-27 17:20:00',NULL,NULL,1),
+	 (1,2,2,'38','','LUCIA','2025-08-27 17:20:29',NULL,NULL,1),
+	 (1,2,2,'39','','LUCIA','2025-08-27 17:20:58',NULL,NULL,1),
+	 (1,2,2,'40','','LUCIA','2025-08-27 17:21:21',NULL,NULL,1),
+	 (1,2,2,'41','','LUCIA','2025-08-27 17:21:34',NULL,NULL,1),
+	 (1,2,2,'42','','LUCIA','2025-08-27 17:21:53',NULL,NULL,1);
+INSERT INTO wptvxhei_ventas.CONTRATO_PUESTO_COMERCIAL (id_empresa,id_tipo_puesto_comercial,sucursalid,interior,observacion,usuing,fechaing,usumod,fechamod,estado) VALUES
+	 (1,2,2,'43','','LUCIA','2025-08-27 17:23:18',NULL,NULL,1),
+	 (1,2,2,'44','','LUCIA','2025-08-27 17:23:33',NULL,NULL,1),
+	 (1,2,2,'45','','LUCIA','2025-08-27 17:23:52',NULL,NULL,1),
+	 (1,2,2,'46','','LUCIA','2025-08-27 17:24:19',NULL,NULL,1),
+	 (1,2,2,'47','','LUCIA','2025-08-27 17:24:34',NULL,NULL,1),
+	 (1,2,2,'48','','LUCIA','2025-08-27 17:24:46',NULL,NULL,1),
+	 (1,2,2,'49','','LUCIA','2025-08-27 17:25:13',NULL,NULL,1),
+	 (1,2,2,'50','','LUCIA','2025-08-27 17:25:30',NULL,NULL,1),
+	 (1,2,2,'51','','LUCIA','2025-08-27 17:25:49',NULL,NULL,1),
+	 (1,2,2,'52','','LUCIA','2025-08-27 17:26:23',NULL,NULL,1);
+INSERT INTO wptvxhei_ventas.CONTRATO_PUESTO_COMERCIAL (id_empresa,id_tipo_puesto_comercial,sucursalid,interior,observacion,usuing,fechaing,usumod,fechamod,estado) VALUES
+	 (1,2,2,'53','','LUCIA','2025-08-27 17:26:44',NULL,NULL,1),
+	 (1,2,2,'54','','LUCIA','2025-08-27 17:27:36',NULL,NULL,1),
+	 (1,2,2,'55','','LUCIA','2025-08-27 17:28:33',NULL,NULL,1),
+	 (1,2,2,'56','','LUCIA','2025-08-27 17:29:23',NULL,NULL,1),
+	 (1,1,6,'1','','LUCIA','2025-08-27 17:31:53',NULL,NULL,1),
+	 (1,1,6,'2','','LUCIA','2025-08-27 17:32:05',NULL,NULL,1),
+	 (1,1,6,'3','','LUCIA','2025-08-27 17:32:20',NULL,NULL,1),
+	 (1,1,6,'4','','LUCIA','2025-08-27 17:32:39',NULL,NULL,1),
+	 (1,1,6,'5','','LUCIA','2025-08-27 17:33:28',NULL,NULL,1),
+	 (1,1,6,'6','','LUCIA','2025-08-27 17:33:48',NULL,NULL,1);
+INSERT INTO wptvxhei_ventas.CONTRATO_PUESTO_COMERCIAL (id_empresa,id_tipo_puesto_comercial,sucursalid,interior,observacion,usuing,fechaing,usumod,fechamod,estado) VALUES
+	 (1,1,6,'7','','LUCIA','2025-08-27 17:34:34',NULL,NULL,1),
+	 (1,1,6,'8','','LUCIA','2025-08-27 17:35:26',NULL,NULL,1),
+	 (1,1,6,'9','','LUCIA','2025-08-27 17:35:41',NULL,NULL,1),
+	 (1,1,6,'10','','LUCIA','2025-08-27 17:36:03',NULL,NULL,1),
+	 (1,1,6,'11','','LUCIA','2025-08-27 17:36:16',NULL,NULL,1),
+	 (1,1,6,'12','','LUCIA','2025-08-27 17:36:41',NULL,NULL,1),
+	 (1,1,6,'13','','LUCIA','2025-08-27 17:37:18',NULL,NULL,1),
+	 (1,1,6,'14','','LUCIA','2025-08-27 17:37:36',NULL,NULL,1),
+	 (1,1,6,'15','','LUCIA','2025-08-27 17:38:48',NULL,NULL,1),
+	 (1,1,5,'653','','LUCIA','2025-08-27 17:45:56','LUCIA','2025-08-27 17:50:59',1);
+INSERT INTO wptvxhei_ventas.CONTRATO_PUESTO_COMERCIAL (id_empresa,id_tipo_puesto_comercial,sucursalid,interior,observacion,usuing,fechaing,usumod,fechamod,estado) VALUES
+	 (1,1,5,'653A','','LUCIA','2025-08-27 17:48:07','LUCIA','2025-08-27 17:50:44',1),
+	 (1,1,5,'653B','','LUCIA','2025-08-27 17:49:26',NULL,NULL,1),
+	 (1,1,4,'651','','LUCIA','2025-08-27 17:51:32',NULL,NULL,1),
+	 (1,1,4,'651A','','LUCIA','2025-08-27 17:51:44',NULL,NULL,1),
+	 (1,1,4,'651B','','LUCIA','2025-08-27 17:52:10',NULL,NULL,1),
+	 (1,1,4,'1','','LUCIA','2025-08-27 17:54:39','LUCIA','2025-08-29 11:30:42',0),
+	 (1,5,8,'1','','LUCIA','2025-09-24 12:41:50','LUCIA','2025-09-24 12:42:08',1),
+	 (1,5,8,'2','','LUCIA','2025-09-24 12:42:25',NULL,NULL,1),
+	 (1,5,8,'3','','LUCIA','2025-09-24 12:42:40',NULL,NULL,1),
+	 (1,5,8,'4','','LUCIA','2025-09-24 12:42:52',NULL,NULL,1);
+INSERT INTO wptvxhei_ventas.CONTRATO_PUESTO_COMERCIAL (id_empresa,id_tipo_puesto_comercial,sucursalid,interior,observacion,usuing,fechaing,usumod,fechamod,estado) VALUES
+	 (1,5,8,'5','','LUCIA','2025-09-24 12:43:06',NULL,NULL,1),
+	 (1,5,8,'6','','LUCIA','2025-09-24 12:43:19',NULL,NULL,1),
+	 (1,5,8,'7','','LUCIA','2025-09-24 12:43:32',NULL,NULL,1),
+	 (1,5,8,'8','','LUCIA','2025-09-24 12:43:46',NULL,NULL,1),
+	 (1,5,8,'9','','LUCIA','2025-09-24 12:44:00',NULL,NULL,1),
+	 (1,5,8,'10','','LUCIA','2025-09-24 12:44:16',NULL,NULL,1);
+
+
+CREATE  PROCEDURE `USP_PuestoComercial_Listar`(
+  IN p_id_empresa INT,
+  IN p_estado     TINYINT   -- 1 = activos, 0 = inactivos, -1 = ambos
+)
+BEGIN
+  /* Devolvemos el mismo layout que tu SELECT original */
+  SELECT
+      a.id_puesto_comercial,
+      b.id_empresa,
+      b.id_tipo_puesto_comercial,
+      b.descripcion AS tipoPuesto,
+      a.sucursalid,
+      s.descripcion AS sucursal,
+      a.interior,
+      a.observacion,
+      a.estado
+  FROM CONTRATO_PUESTO_COMERCIAL a
+  INNER JOIN CONTRATO_TIPO_PUESTO_COMERCIAL b
+          ON a.id_tipo_puesto_comercial = b.id_tipo_puesto_comercial
+         AND b.id_empresa              = p_id_empresa
+  INNER JOIN sucursal s
+          ON a.sucursalid = s.sucursalid
+  WHERE a.id_empresa = p_id_empresa
+    AND (p_estado = -1 OR IFNULL(a.estado,1) = p_estado)
+  ORDER BY s.descripcion, b.descripcion, a.interior;
+end
