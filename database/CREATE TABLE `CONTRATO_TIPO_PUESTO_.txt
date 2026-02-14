@@ -414,3 +414,34 @@ BEGIN
     AND (p_estado = -1 OR IFNULL(a.estado,1) = p_estado)
   ORDER BY s.descripcion, b.descripcion, a.interior;
 end
+
+
+CREATE TABLE `CONTRATO_ARRENDADOR` (
+  `id_arrendador` int(11) NOT NULL AUTO_INCREMENT,
+  `id_empresa` int(11) NOT NULL,
+  `docident_id` int(11) NOT NULL,
+  `numero_documento` varchar(30) DEFAULT NULL,
+  `abreviatura` varchar(10) DEFAULT NULL,
+  `nombres` varchar(150) NOT NULL,
+  `apellidos` char(150) NOT NULL,
+  `depaid` int(11) NOT NULL,
+  `provid` int(11) NOT NULL,
+  `distid` int(11) NOT NULL,
+  `direccion` varchar(250) DEFAULT NULL,
+  `telefono` varchar(100) DEFAULT NULL,
+  `nombre_concesionario_razon_social` varchar(200) DEFAULT NULL,
+  `fecha_desde` datetime NOT NULL,
+  `fecha_hasta` datetime NOT NULL,
+  `usuing` varchar(50) DEFAULT NULL,
+  `fechaing` datetime DEFAULT NULL,
+  `usumod` varchar(50) DEFAULT NULL,
+  `fechamod` datetime DEFAULT NULL,
+  `estado` bit(1) DEFAULT NULL,
+  PRIMARY KEY (`id_arrendador`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+
+
+
+
+INSERT INTO wptvxhei_ventas.CONTRATO_ARRENDADOR (id_empresa,docident_id,numero_documento,abreviatura,nombres,apellidos,depaid,provid,distid,direccion,telefono,nombre_concesionario_razon_social,fecha_desde,fecha_hasta,usuing,fechaing,usumod,fechamod,estado) VALUES
+	 (1,1,'42213698','SR.','PRUEBA','PRUEBA',15,127,1267,'.',NULL,NULL,'2025-08-03 00:00:00','2028-12-31 00:00:00','LUCIA','2025-08-04 00:52:14','LUCIA','2026-02-05 20:43:04',1);
