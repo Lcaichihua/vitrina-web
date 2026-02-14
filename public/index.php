@@ -51,6 +51,15 @@ switch ($uri) {
         $controller->tipoPuestoComercial();
         break;
 
+    case '/mantenimiento/puesto_comercial': // Nueva ruta
+        if (!isset($_SESSION['user_id'])) {
+            header('Location: /');
+            exit;
+        }
+        $controller = new MantenimientoController();
+        $controller->puestoComercial();
+        break;
+
     default:
         http_response_code(404);
         echo "<h1>404 - Página no encontrada</h1>";
