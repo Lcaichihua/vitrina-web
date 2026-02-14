@@ -2,7 +2,8 @@
 namespace Vitrina\Controllers;
 
 use Vitrina\Models\TipoPuestoComercial;
-use Vitrina\Models\PuestoComercial; // Añadir esta línea
+use Vitrina\Models\PuestoComercial;
+use Vitrina\Models\Arrendador; // Añadir esta línea
 use Exception;
 
 class MantenimientoController {
@@ -61,5 +62,33 @@ class MantenimientoController {
 
         // Cargar la vista, pasando las variables de paginación
         require_once __DIR__ . '/../../templates/mantenimiento/puestos_comerciales.php';
+    }
+
+    public function arrendador() {
+        // Asegurarse de que el usuario esté autenticado
+        if (!isset($_SESSION['user_id'])) {
+            header('Location: /login'); // Redirigir al login si no está autenticado
+            exit;
+        }
+
+        $error = null;
+        $arrendadores = [];
+
+        $records_per_page = 10;
+        $current_page = isset($_GET['page']) && is_numeric($_GET['page']) ? (int)$_GET['page'] : 1;
+        $offset = ($current_page - 1) * $records_per_page;
+
+        try {
+            $model = new Arrendador();
+            $total_records = $model->getTotalRecords();
+            $total_pages = ceil($total_records / $records_per_page);
+            $arrendadores = $model->getPaginatedRecords($records_per_page, $offset);
+        } catch (Exception $e) {
+            error_log("Error al obtener arrendadores: " . $e->getMessage());
+            $error = "No se pudieron cargar los arrendadores: " . $e->getMessage();
+        }
+
+        // Cargar la vista, pasando las variables de paginación
+        require_once __DIR__ . '/../../templates/mantenimiento/arrendadores.php';
     }
 }

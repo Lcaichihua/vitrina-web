@@ -51,13 +51,22 @@ switch ($uri) {
         $controller->tipoPuestoComercial();
         break;
 
-    case '/mantenimiento/puesto_comercial': // Nueva ruta
+    case '/mantenimiento/puesto_comercial':
         if (!isset($_SESSION['user_id'])) {
             header('Location: /');
             exit;
         }
         $controller = new MantenimientoController();
         $controller->puestoComercial();
+        break;
+
+    case '/mantenimiento/arrendadores': // Nueva ruta
+        if (!isset($_SESSION['user_id'])) {
+            header('Location: /');
+            exit;
+        }
+        $controller = new MantenimientoController();
+        $controller->arrendador();
         break;
 
     default:
