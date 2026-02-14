@@ -133,6 +133,34 @@
                         </table>
                     </div>
                 <?php endif; ?>
+
+                <?php if (!empty($tiposPuesto) && $total_pages > 1): ?>
+                    <nav class="bg-white px-4 py-3 flex items-center justify-between border-t border-gray-200 sm:px-6 mt-4" aria-label="Pagination">
+                        <div class="hidden sm:block">
+                            <p class="text-sm text-gray-700">
+                                Mostrando
+                                <span class="font-medium"><?php echo ($current_page - 1) * $records_per_page + 1; ?></span>
+                                a
+                                <span class="font-medium"><?php echo min($current_page * $records_per_page, $total_records); ?></span>
+                                de
+                                <span class="font-medium"><?php echo $total_records; ?></span>
+                                resultados
+                            </p>
+                        </div>
+                        <div class="flex-1 flex justify-between sm:justify-end">
+                            <?php if ($current_page > 1): ?>
+                                <a href="?page=<?php echo $current_page - 1; ?>" class="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
+                                    Anterior
+                                </a>
+                            <?php endif; ?>
+                            <?php if ($current_page < $total_pages): ?>
+                                <a href="?page=<?php echo $current_page + 1; ?>" class="ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
+                                    Siguiente
+                                </a>
+                            <?php endif; ?>
+                        </div>
+                    </nav>
+                <?php endif; ?>
             </div>
         </div>
     </div>

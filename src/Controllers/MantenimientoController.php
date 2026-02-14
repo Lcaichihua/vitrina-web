@@ -16,15 +16,21 @@ class MantenimientoController {
         $error = null;
         $tiposPuesto = [];
 
+        $records_per_page = 10;
+        $current_page = isset($_GET['page']) && is_numeric($_GET['page']) ? (int)$_GET['page'] : 1;
+        $offset = ($current_page - 1) * $records_per_page;
+
         try {
             $model = new TipoPuestoComercial();
-            $tiposPuesto = $model->getAll();
+            $total_records = $model->getTotalRecords();
+            $total_pages = ceil($total_records / $records_per_page);
+            $tiposPuesto = $model->getPaginatedRecords($records_per_page, $offset);
         } catch (Exception $e) {
             error_log("Error al obtener tipos de puesto comercial: " . $e->getMessage());
             $error = "No se pudieron cargar los tipos de puesto comercial: " . $e->getMessage();
         }
 
-        // Cargar la vista
+        // Cargar la vista, pasando las variables de paginación
         require_once __DIR__ . '/../../templates/mantenimiento/tipos_puesto_comercial.php';
     }
 
@@ -38,15 +44,22 @@ class MantenimientoController {
         $error = null;
         $puestosComerciales = [];
 
+        $records_per_page = 10;
+        $current_page = isset($_GET['page']) && is_numeric($_GET['page']) ? (int)$_GET['page'] : 1;
+        $offset = ($current_page - 1) * $records_per_page;
+        $filtroEstado = 1; // 1 = activos (vigentes)
+
         try {
             $model = new PuestoComercial();
-            $puestosComerciales = $model->getAllVigentes();
+            $total_records = $model->getTotalRecords($filtroEstado);
+            $total_pages = ceil($total_records / $records_per_page);
+            $puestosComerciales = $model->getPaginatedRecords($filtroEstado, $records_per_page, $offset);
         } catch (Exception $e) {
             error_log("Error al obtener puestos comerciales: " . $e->getMessage());
             $error = "No se pudieron cargar los puestos comerciales: " . $e->getMessage();
         }
 
-        // Cargar la vista
+        // Cargar la vista, pasando las variables de paginación
         require_once __DIR__ . '/../../templates/mantenimiento/puestos_comerciales.php';
     }
 }
