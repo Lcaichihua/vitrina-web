@@ -19,10 +19,18 @@ require_once PROJECT_ROOT . '/vendor/autoload.php';
 // Cargar el archivo de configuración
 require_once PROJECT_ROOT . '/config/database.php';
 
+// Cargar la clase Globales
+require_once PROJECT_ROOT . '/src/Lib/Globales.php';
+
+// Cargar el id_empresa de la sesión en la variable global estática
+if (isset($_SESSION['empresa_id'])) {
+    \Vitrina\Lib\Globales::$o_id_empresa = $_SESSION['empresa_id'];
+}
+
 // Iniciar la conexión a la BD y ponerla en una variable global (simple para este proyecto)
 // En un proyecto más grande, usaríamos Inyección de Dependencias.
 try {
-    $GLOBALS['pdo'] = getPdoConnection();
+    $GLOBALS['pdo'] = Database::connect();
 } catch (Exception $e) {
     die($e->getMessage());
 }

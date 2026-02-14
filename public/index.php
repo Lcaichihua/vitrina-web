@@ -11,18 +11,12 @@ if (php_sapi_name() === 'cli-server') {
     }
 }
 
-// Configuración de Sesión Segura
-session_start([
-    'cookie_lifetime' => 86400,
-    'cookie_secure' => false, // Cambiar a true si usas HTTPS
-    'cookie_httponly' => true,
-    'cookie_samesite' => 'Lax',
-]);
+// Cargar Archivos de inicialización y configuración
+require_once __DIR__ . '/../src/bootstrap.php';
 
-// Cargar Archivos
-require_once __DIR__ . '/../config/database.php';
-require_once __DIR__ . '/../src/Models/User.php';
-require_once __DIR__ . '/../src/Controllers/AuthController.php';
+use Vitrina\Controllers\AuthController;
+use Vitrina\Controllers\MantenimientoController;
+use Vitrina\Lib\Globales;
 
 // Enrutador Básico
 $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
@@ -31,12 +25,12 @@ $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 switch ($uri) {
     case '/':
     case '/login':
-        $controller = new \Vitrina\Controllers\AuthController();
+        $controller = new AuthController();
         $controller->login();
         break;
 
     case '/logout':
-        $controller = new \Vitrina\Controllers\AuthController();
+        $controller = new AuthController();
         $controller->logout();
         break;
 
@@ -46,6 +40,15 @@ switch ($uri) {
             exit;
         }
         require_once __DIR__ . '/../templates/dashboard.php';
+        break;
+
+    case '/mantenimiento/tipo_puesto_comercial':
+        if (!isset($_SESSION['user_id'])) {
+            header('Location: /');
+            exit;
+        }
+        $controller = new MantenimientoController();
+        $controller->tipoPuestoComercial();
         break;
 
     default:

@@ -2,6 +2,7 @@
 namespace Vitrina\Controllers;
 
 use Vitrina\Models\User;
+use Vitrina\Lib\Globales; // Add this line
 use Exception; // Importante para capturar errores generales
 
 class AuthController {
@@ -67,6 +68,9 @@ class AuthController {
                                 $_SESSION['sucursal'] = $user['sucursal_nombre'] ?? 'N/A';
                                 $_SESSION['caja'] = $user['caja_nombre'] ?? 'N/A';
                                 $_SESSION['igv'] = $user['igv'] ?? 0.18;
+
+                                // Set Globales::$o_id_empresa
+                                Globales::$o_id_empresa = $empresaId; // Add this line
 
                                 header('Location: /dashboard');
                                 exit;
