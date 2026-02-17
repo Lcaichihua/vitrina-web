@@ -563,3 +563,116 @@ BEGIN
     WHERE a.id_empresa = p_id_empresa
       AND (p_estado = -1 OR a.estado = p_estado);
 END
+
+
+
+
+CREATE TABLE `CONTRATO_TIPO_CONTRATO_MOD` (
+  `id_tipo_contrato` int(11) NOT NULL AUTO_INCREMENT,
+  `codigo` varchar(20) NOT NULL,
+  `descripcion` varchar(120) NOT NULL,
+  `abreviatura` varchar(15) DEFAULT NULL,
+  `observaciones` varchar(250) DEFAULT NULL,
+  `es_administrado` tinyint(1) NOT NULL DEFAULT 0,
+  `usa_renta_variable` tinyint(1) NOT NULL DEFAULT 0,
+  `requiere_contraprestacion` tinyint(1) NOT NULL DEFAULT 0,
+  `permite_liquidacion_semanal` tinyint(1) NOT NULL DEFAULT 1,
+  `activo` bit(1) DEFAULT b'1',
+  `usuing` varchar(50) DEFAULT NULL,
+  `fechaing` datetime DEFAULT NULL,
+  `usumod` varchar(50) DEFAULT NULL,
+  `fechamod` datetime DEFAULT NULL,
+  PRIMARY KEY (`id_tipo_contrato`),
+  UNIQUE KEY `uq_tipo_codigo` (`codigo`),
+  UNIQUE KEY `uq_tipo_abrev` (`abreviatura`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci
+
+INSERT INTO CONTRATO_TIPO_CONTRATO_MOD (codigo,descripcion,abreviatura,observaciones,es_administrado,usa_renta_variable,requiere_contraprestacion,permite_liquidacion_semanal,activo,usuing,fechaing,usumod,fechamod) VALUES
+	 ('ADMIN_VAR','Administrado con renta variable','ADM_VAR',NULL,1,1,0,1,1,NULL,NULL,NULL,NULL),
+	 ('ADMIN_FIJO','Administrado con canon fijo mensual','ADM_FIJ',NULL,1,0,1,1,1,NULL,NULL,NULL,NULL),
+	 ('NO_ADMIN','No administrado (arrendatario cobra)','NO_ADM',NULL,0,0,1,1,1,NULL,NULL,NULL,NULL);
+
+
+
+
+
+
+CREATE TABLE `CONTRATO` (
+  `id_contrato` int(11) NOT NULL AUTO_INCREMENT,
+  `id_empresa` int(11) NOT NULL,
+  `numero_contrato` varchar(20) DEFAULT NULL,
+  `id_arrendador` int(11) NOT NULL,
+  `id_arrendatario` int(11) NOT NULL,
+  `id_sucursal` int(11) NOT NULL,
+  `id_tipo_contrato` int(11) NOT NULL,
+  `inicio_contrato` date NOT NULL,
+  `fin_contrato` date NOT NULL,
+  `tipo_moneda` varchar(15) NOT NULL DEFAULT 'USD',
+  `observaciones` varchar(250) DEFAULT NULL,
+  `estado` enum('BORRADOR','VIGENTE','RESCINDIDO','ANULADO','VENCIDO') DEFAULT 'VIGENTE',
+  `usuing` varchar(50) DEFAULT NULL,
+  `fechaing` datetime DEFAULT NULL,
+  `usumod` varchar(50) DEFAULT NULL,
+  `fechamod` datetime DEFAULT NULL,
+  `activo` bit(1) DEFAULT b'1',
+  `nro_meses` int(11) DEFAULT NULL,
+  `fecha_finalizacion` date DEFAULT NULL,
+  `ruta_documento_ftp` varchar(250) DEFAULT NULL,
+  PRIMARY KEY (`id_contrato`),
+  UNIQUE KEY `uq_contrato_empresa_num` (`id_empresa`,`numero_contrato`),
+  KEY `fk_contrato_tipo` (`id_tipo_contrato`),
+  CONSTRAINT `fk_contrato_tipo` FOREIGN KEY (`id_tipo_contrato`) REFERENCES `CONTRATO_TIPO_CONTRATO_MOD` (`id_tipo_contrato`)
+) ENGINE=InnoDB AUTO_INCREMENT=32 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci
+
+
+
+
+INSERT INTO wptvxhei_ventas.CONTRATO (id_empresa,numero_contrato,id_arrendador,id_arrendatario,id_sucursal,id_tipo_contrato,inicio_contrato,fin_contrato,tipo_moneda,observaciones,estado,usuing,fechaing,usumod,fechamod,activo,nro_meses,fecha_finalizacion,ruta_documento_ftp) VALUES
+	 (1,'PU-05-2025',2,18,2,2,'2025-05-01','2026-04-30','DOLARES','INTERIOR 3, USD 800.00
+INTERIOR 4, USD 700.00
+INTERIOR 5, USD 700.00','BORRADOR','LEGAL','2025-09-02 16:47:08',NULL,NULL,1,12,NULL,'ftp://www.lavitrina.com.pe//CONTRATO DE SUBARRENDAMIENTO N° PU609-0005-2025 BAILI S.A.C.pdf'),
+	 (1,'PU-009-2024',2,11,2,2,'2024-04-01','2025-03-31','DOLARES','INTERIOR 1, USD 2,000.00
+INTERIOR 2, USD 1,000.00','BORRADOR','LEGAL','2025-09-04 13:18:41',NULL,NULL,1,12,NULL,'ftp://www.lavitrina.com.pe//CONTRATO DE SUBARRENDAMIENTO N° PU609-I009-2024 HARRYTEL E.I.R.L INT 1-2.pdf'),
+	 (1,'PU-011-2024',2,10,2,2,'2024-02-01','2024-07-31','DOLARES','','BORRADOR','LEGAL','2025-09-04 13:29:24',NULL,NULL,1,6,NULL,'ftp://www.lavitrina.com.pe//ADENDA N° 03 CONTRATO DE SUBBARRENDAMIENTO N° PU6209-I0011-2024 GUILLERMINA CHUCO SALCEDO.pdf'),
+	 (1,'PU-021-2024',2,14,2,2,'2024-05-16','2024-11-15','DOLARES','INTERIOR 7, USD 450.00
+INTERIOR 8, USD 450.00','BORRADOR','LEGAL','2025-09-04 13:50:52',NULL,NULL,1,6,NULL,'ftp://www.lavitrina.com.pe//ADENDA N°02 CONTRATO DE SUBARRENDAMIENTO N°PU609-I0021-2024 VICTOR VILCHEZ C.pdf'),
+	 (1,'PU-010-2024',2,11,2,2,'2024-04-01','2025-03-31','DOLARES','','BORRADOR','LEGAL','2025-09-05 16:38:08',NULL,NULL,1,12,NULL,'ftp://www.lavitrina.com.pe//CONTRATO DE SUBARRENDAMIENTO N° PU609-I0010-2024 HARRYTEL E.I.R.L INT 9.pdf'),
+	 (1,'PU-002-2025',2,17,2,2,'2025-02-10','2026-02-09','DOLARES','INTERIOR 14, USD 600.00 
+INTERIOR 15, USD 600.00 
+INTERIOR 16, USD 400.00*
+INTERIOR 17, USD 400.00*
+
+*A PARTIR DEL MES DE ENERO DEL AÑO 2026, EL MONTO DE LA CONTRAPRESTACIÓN POR CADA UNO DE ESTOS ESPACIOS SERÁ DE USD 500.00 (QUINIENTOS CON 00/10','BORRADOR','LEGAL','2025-09-05 16:59:37',NULL,NULL,1,12,NULL,NULL),
+	 (1,'PU-013-2024',2,12,2,2,'2024-04-01','2024-09-30','DOLARES','A PARTIR DEL MES DE NOVIEMBRE DEL AÑO 2025 PAGARA COMO CONTRAPRESTACION USD 500.00','BORRADOR','LEGAL','2025-09-08 14:04:15',NULL,NULL,1,6,NULL,'ftp://www.lavitrina.com.pe//ADENDA N°02 CONTRATO DE SUBARRENDAMIENTO N° PU609-I0013-2024 EDWIN CHERO V.pdf'),
+	 (1,'PU-007-2019',2,6,2,2,'2019-01-01','2019-12-31','DOLARES','INTERIOR 10, USD 1,000.00
+INTERIOR 11, USD 1,000.00','BORRADOR','LEGAL','2025-09-08 14:21:29','LEGAL','2025-09-08 14:24:10',1,12,NULL,'ftp://www.lavitrina.com.pe//Adenda N° 04 al Contrato N° PU-07-2019 (Julian Condor).docx'),
+	 (1,'AB685-006-2023',2,21,6,2,'2023-09-25','2024-03-24','DOLARES','STAND 1, USD 600
+STAND 2, USD 600
+STAND 15, USD 600','BORRADOR','LEGAL','2025-09-09 17:05:08','LEGAL','2025-09-09 17:18:22',1,6,NULL,NULL),
+	 (1,'AB685-004-2024',2,20,6,2,'2024-04-01','2025-03-31','DOLARES','INTERIOR 3, USD 600
+INTERIOR 4, USD 600','BORRADOR','LEGAL','2025-09-09 17:15:15',NULL,NULL,1,12,NULL,'ftp://www.lavitrina.com.pe//ADENDA N°01 CONTRATO DE SUBARRENDAMIENTO N° AB685-I0004-2024 YHOR NEYRA C.pdf');
+
+INSERT INTO wptvxhei_ventas.CONTRATO (id_empresa,numero_contrato,id_arrendador,id_arrendatario,id_sucursal,id_tipo_contrato,inicio_contrato,fin_contrato,tipo_moneda,observaciones,estado,usuing,fechaing,usumod,fechamod,activo,nro_meses,fecha_finalizacion,ruta_documento_ftp) VALUES
+	 (1,'AB685-005-2022',2,19,6,2,'2022-06-01','2023-05-31','DOLARES','INTERIOR 6, USD 650
+INTERIOR 7, USD 650','BORRADOR','LEGAL','2025-09-09 17:34:01',NULL,NULL,1,12,NULL,NULL),
+	 (1,'AB689-0017-2024',2,22,6,2,'2024-05-27','2024-11-26','DOLARES','','BORRADOR','LEGAL','2025-09-10 17:06:24',NULL,NULL,1,6,NULL,'ftp://www.lavitrina.com.pe//CONTRATO DE SUBARRENDAMIENTO N° AB685-I0017-2024 LICET MARCELO BONIFACIO.pdf'),
+	 (1,'AB-019-2024',2,23,6,2,'2025-01-03','2025-07-02','DOLARES','INTERIOR 10, USD 600
+INTERIOR 11, USD 600','BORRADOR','LEGAL','2025-09-10 17:31:12',NULL,NULL,1,6,NULL,'ftp://www.lavitrina.com.pe//CONTRATO DE SUBARRENDAMIENTO N° AB685-I0019-2024 YARINA MONTALVO RAMOS.pdf'),
+	 (1,'AB-003-2025',2,24,6,2,'2025-04-15','2025-10-14','DOLARES','INTERIOR 12, USD 250.00
+INTERIOR 13, USD 400','BORRADOR','LEGAL','2025-09-10 18:10:50',NULL,NULL,1,6,NULL,'ftp://www.lavitrina.com.pe//ADENDA N°02 CONTRATO DE SUBARRENDAMIENTO N°AB685-I0003-2025 MAICO TORRE ABREGU.pdf'),
+	 (1,'AB653-003-2024',2,25,5,2,'2024-04-01','2025-03-31','DOLARES','','BORRADOR','LEGAL','2025-09-10 18:42:35',NULL,NULL,1,12,NULL,NULL),
+	 (1,'AB-01-2024',2,26,5,2,'2024-01-08','2024-07-07','DOLARES','','BORRADOR','LEGAL','2025-09-11 10:39:20',NULL,NULL,1,6,NULL,'ftp://www.lavitrina.com.pe//CONTRATO DE SUBARRENDAMIENTO AB-653-B N° 01-2024 PORFIRIO GUZMAN LAZO.pdf'),
+	 (1,'AB653-01-2024',2,21,5,2,'2024-01-08','2024-07-07','DOLARES','','BORRADOR','LEGAL','2025-09-11 10:51:38',NULL,NULL,1,6,NULL,'ftp://www.lavitrina.com.pe//CONTRATO DE SUBARRENDAMIENTO AB-653 N° 01-2024 VISION CIENCIA E.I.R.L.pdf'),
+	 (1,'AB651-001-2024',2,27,4,2,'2024-04-01','2025-03-31','DOLARES','INTERIOR 651, USD 1,300.00
+INTERIOR 651A, USD 1,200.00','BORRADOR','LEGAL','2025-09-11 11:05:39',NULL,NULL,1,12,NULL,'ftp://www.lavitrina.com.pe//ADENDA N°01 CONTRATO DE SUBARRENDAMIENTO AB651-I0001-2024 PLACIDA SONCCO P.pdf'),
+	 (1,'AB651B-001-2025',2,28,4,2,'2025-03-03','2026-03-02','DOLARES','','BORRADOR','LEGAL','2025-09-11 15:56:37',NULL,NULL,1,12,NULL,'ftp://www.lavitrina.com.pe//Ticket-3498223940.pdf'),
+	 (1,'PU-C007-2025',2,17,2,1,'2025-07-31','2026-01-30','DOLARES','','BORRADOR','LEGAL','2025-09-12 17:14:31','LEGAL','2025-10-10 13:22:59',1,6,NULL,NULL);
+
+INSERT INTO wptvxhei_ventas.CONTRATO (id_empresa,numero_contrato,id_arrendador,id_arrendatario,id_sucursal,id_tipo_contrato,inicio_contrato,fin_contrato,tipo_moneda,observaciones,estado,usuing,fechaing,usumod,fechamod,activo,nro_meses,fecha_finalizacion,ruta_documento_ftp) VALUES
+	 (1,'AB-V009-2024',2,29,8,3,'2024-05-01','2024-05-31','DOLARES','','BORRADOR','LEGAL','2025-09-24 13:19:45',NULL,NULL,1,1,NULL,NULL),
+	 (1,'AB-V010-2024',2,30,8,3,'2024-05-01','2024-05-31','DOLARES','','BORRADOR','LEGAL','2025-09-24 13:28:42',NULL,NULL,1,1,NULL,NULL),
+	 (1,'PU-0023-2024',2,15,2,2,'2024-06-28','2024-12-27','DOLARES','EN LA ADENDA 6 SE MODIFICO TEMPORALMENTE EL MONTO DE LA CONTRAPRESTACION A USD 700.00 CADA UNO. A PARTIR DEL NOVIEMBRE DE 2025 SERA DE USD 800.00 CADA UNO.','BORRADOR','LEGAL','2025-10-10 09:39:47','LUCIA','2025-11-17 01:27:04',1,6,NULL,NULL),
+	 (1,'PU-0006-2025',2,36,2,1,'2025-04-14','2025-10-13','DOLARES','','BORRADOR','LEGAL','2025-10-10 12:48:43',NULL,NULL,1,6,NULL,NULL),
+	 (1,'PU-0008-2025',2,37,2,1,'2025-09-02','2026-09-01','DOLARES','','BORRADOR','LEGAL','2025-10-10 13:02:40','LUCIA','2026-02-05 20:47:10',1,12,NULL,NULL),
+	 (1,'PU609-0011-2025',2,17,2,1,'2025-10-23','2026-10-22','DOLARES','','BORRADOR','LEGAL','2025-11-03 16:14:59',NULL,NULL,1,12,NULL,NULL),
+	 (1,'PU609-0002-2025',2,7,2,1,'2025-08-01','2026-01-31','DOLARES','','BORRADOR','LEGAL','2025-11-03 16:26:40',NULL,NULL,1,6,NULL,NULL);
