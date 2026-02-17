@@ -77,6 +77,15 @@ switch ($uri) {
         $controller = new MantenimientoController();
         $controller->arrendatarios();
         break;
+        
+    case '/contratos/listado': // Nueva ruta para Listado de Contratos
+        if (!isset($_SESSION['user_id'])) {
+            header('Location: /');
+            exit;
+        }
+        $controller = new MantenimientoController();
+        $controller->contratos();
+        break;
 
     default:
         http_response_code(404);
