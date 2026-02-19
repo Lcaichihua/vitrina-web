@@ -2,7 +2,16 @@
 
 <?php require_once __DIR__ . '/partials/navbar.php'; ?>
 
+<body class="bg-slate-100" x-data="{ loading: true }" x-init="setTimeout(() => loading = false, 500)">
+    <div x-show="loading" class="fixed inset-0 bg-white/80 backdrop-blur-sm z-50 flex items-center justify-center" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" x-transition:leave="transition ease-in duration-200" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0">
+        <div class="text-center">
+            <div class="inline-block animate-spin rounded-full h-12 w-12 border-4 border-blue-600 border-t-transparent"></div>
+            <p class="mt-4 text-slate-600 font-medium">Cargando...</p>
+        </div>
+    </div>
+
 <!-- Contenido Principal -->
+<div x-show="!loading" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 translate-y-4" x-transition:enter-end="opacity-100 translate-y-0">
 <div class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
     <div class="px-4 sm:px-0">
         <!-- Welcome Card -->
@@ -86,6 +95,7 @@
             </div>
         </div>
     </div>
+</div>
 </div>
 
 </body>

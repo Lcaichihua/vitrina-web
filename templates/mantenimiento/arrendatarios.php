@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Listado de Arrendatarios | La Vitrina</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -20,11 +21,20 @@
         }
     </style>
 </head>
-<body class="bg-slate-100">
+<body class="bg-slate-100" x-data="{ loading: true }" x-init="setTimeout(() => loading = false, 500)">
+
+    <!-- Spinner de carga -->
+    <div x-show="loading" class="fixed inset-0 bg-white/80 backdrop-blur-sm z-50 flex items-center justify-center" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" x-transition:leave="transition ease-in duration-200" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0">
+        <div class="text-center">
+            <div class="inline-block animate-spin rounded-full h-12 w-12 border-4 border-blue-600 border-t-transparent"></div>
+            <p class="mt-4 text-slate-600 font-medium">Cargando...</p>
+        </div>
+    </div>
 
 <?php require_once __DIR__ . '/../partials/navbar.php'; ?>
 
 <!-- Contenido Principal -->
+<div x-show="!loading" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 translate-y-4" x-transition:enter-end="opacity-100 translate-y-0">
 <div class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
     <div class="px-4 sm:px-0">
         <!-- Header Section -->
@@ -33,8 +43,11 @@
                 <h3 class="text-2xl font-bold text-slate-800">Arrendatarios</h3>
                 <p class="text-sm text-slate-500 mt-1">Gestiona los arrendatarios del sistema</p>
             </div>
-            <button class="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2.5 px-5 rounded-xl shadow-lg shadow-blue-600/20 transition-all duration-200 hover:shadow-blue-600/30 hover:-translate-y-0.5">
-                <i class="fa-solid fa-plus"></i>
+            <button class="group relative inline-flex items-center gap-2.5 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-semibold py-2.5 px-5 rounded-xl shadow-lg shadow-blue-600/25 transition-all duration-200 hover:shadow-blue-600/40 hover:-translate-y-0.5 active:translate-y-0 active:shadow-md">
+                <span class="absolute inset-0 rounded-xl bg-white/20 opacity-0 group-hover:opacity-100 transition-opacity"></span>
+                <span class="w-5 h-5 rounded-full bg-white/20 flex items-center justify-center">
+                    <i class="fa-solid fa-plus text-xs"></i>
+                </span>
                 Nuevo Arrendatario
             </button>
         </div>
@@ -207,6 +220,7 @@
             <?php endif; ?>
         </div>
     </div>
+</div>
 </div>
 
 </body>
