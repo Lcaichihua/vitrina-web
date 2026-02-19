@@ -152,11 +152,13 @@ class MantenimientoController {
 
         try {
             $model = new Contrato();
-            $tiposContrato = $model->getTiposContrato(); // Obtener opciones para el combobox
+            $tiposContrato = $model->getTiposContrato();
 
-            $total_records = $model->getTotalRecords($idTipoContrato, $pieIngreso, $numeroContrato, $arrendatario);
+            // Una sola llamada al SP
+            $result = $model->getContratos($idTipoContrato, $pieIngreso, $numeroContrato, $arrendatario, $records_per_page, $offset);
+            $total_records = $result['total'];
+            $contratos = $result['data'];
             $total_pages = ceil($total_records / $records_per_page);
-            $contratos = $model->getPaginatedRecords($idTipoContrato, $pieIngreso, $numeroContrato, $arrendatario, $records_per_page, $offset);
         } catch (Exception $e) {
             error_log("Error al obtener contratos: " . $e->getMessage());
             $error = "No se pudieron cargar los contratos: " . $e->getMessage();

@@ -13,38 +13,7 @@ class Contrato {
         $this->pdo = Database::connect();
     }
 
-    public function getTotalRecords(
-        ?int $idTipoContrato,
-        ?string $pieIngreso,
-        ?string $numeroContrato,
-        ?string $arrendatario
-    ): int {
-        try {
-            $p_id_tipo_contrato = $idTipoContrato !== null ? (string)$idTipoContrato : 'NULL';
-            $p_pie_ingreso = $pieIngreso !== null ? "'" . addslashes($pieIngreso) . "'" : 'NULL';
-            $p_numero_contrato = $numeroContrato !== null ? "'" . addslashes($numeroContrato) . "'" : 'NULL';
-            $p_arrendatario = $arrendatario !== null ? "'" . addslashes($arrendatario) . "'" : 'NULL';
-            
-            $sql = "CALL wptvxhei_ventas.USP_Listar_Contratos_v2_Paginado(
-                " . (int)Globales::$o_id_empresa . ",
-                $p_id_tipo_contrato,
-                $p_pie_ingreso,
-                $p_numero_contrato,
-                $p_arrendatario,
-                0, 0, 1
-            )";
-            
-            $stmt = $this->pdo->query($sql);
-            $result = $stmt->fetch(PDO::FETCH_ASSOC);
-            
-            return $result ? (int) $result['total'] : 0;
-        } catch (PDOException $e) {
-            error_log("Error en Contrato::getTotalRecords: " . $e->getMessage());
-            return 0;
-        }
-    }
-
-    public function getPaginatedRecords(
+    public function getContratos(
         ?int $idTipoContrato,
         ?string $pieIngreso,
         ?string $numeroContrato,
@@ -58,20 +27,33 @@ class Contrato {
             $p_numero_contrato = $numeroContrato !== null ? "'" . addslashes($numeroContrato) . "'" : 'NULL';
             $p_arrendatario = $arrendatario !== null ? "'" . addslashes($arrendatario) . "'" : 'NULL';
             
-            $sql = "CALL wptvxhei_ventas.USP_Listar_Contratos_v2_Paginado(
+            $sql = "CALL wptvxhei_ventas.USP_Listar_Contratos_v2_Paginado2(
                 " . (int)Globales::$o_id_empresa . ",
                 $p_id_tipo_contrato,
                 $p_pie_ingreso,
                 $p_numero_contrato,
                 $p_arrendatario,
-                $limit, $offset, 0
+                $limit, $offset
             )";
             
             $stmt = $this->pdo->query($sql);
-            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+            
+            // Primer resultset: Total
+            $totalResult = $stmt->fetch(PDO::FETCH_ASSOC);
+            $total = $totalResult ? (int)$totalResult['total'] : 0;
+            
+            // Segundo resultset: Datos
+            $stmt->nextRowset();
+            $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            
+            // Retornar ambos valores
+            return [
+                'total' => $total,
+                'data' => $data
+            ];
         } catch (PDOException $e) {
-            error_log("Error en Contrato::getPaginatedRecords: " . $e->getMessage());
-            return [];
+            error_log("Error en Contrato::getContratos: " . $e->getMessage());
+            return ['total' => 0, 'data' => []];
         }
     }
 
