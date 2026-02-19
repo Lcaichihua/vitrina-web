@@ -13,8 +13,6 @@ class TipoPuestoComercial {
         $this->pdo = Database::connect();
     }
 
-    // El método getAll() se mantiene por si hay otras partes del código que lo usen,
-    // pero la paginación usará los nuevos métodos.
     public function getAll() {
         try {
             $sql = "select id_tipo_puesto_comercial,descripcion,estado," .
@@ -28,12 +26,23 @@ class TipoPuestoComercial {
         }
     }
 
-    public function getTotalRecords(): int {
+    public function getTotalRecords(?string $search = null): int {
         try {
-            $stmt = $this->pdo->prepare(
-                "SELECT COUNT(*) FROM CONTRATO_TIPO_PUESTO_COMERCIAL WHERE id_empresa = ?"
-            );
-            $stmt->bindParam(1, Globales::$o_id_empresa, PDO::PARAM_INT);
+            $whereClause = "WHERE id_empresa = :id_empresa";
+            
+            if ($search) {
+                $whereClause .= " AND descripcion LIKE :search";
+            }
+
+            $sql = "SELECT COUNT(*) FROM CONTRATO_TIPO_PUESTO_COMERCIAL $whereClause";
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->bindParam(':id_empresa', Globales::$o_id_empresa, PDO::PARAM_INT);
+            
+            if ($search) {
+                $searchParam = "%$search%";
+                $stmt->bindParam(':search', $searchParam, PDO::PARAM_STR);
+            }
+            
             $stmt->execute();
             return (int) $stmt->fetchColumn();
         } catch (PDOException $e) {
@@ -42,15 +51,27 @@ class TipoPuestoComercial {
         }
     }
 
-    public function getPaginatedRecords(int $limit, int $offset): array {
+    public function getPaginatedRecords(int $limit, int $offset, ?string $search = null): array {
         try {
+            $whereClause = "WHERE id_empresa = :id_empresa";
+            
+            if ($search) {
+                $whereClause .= " AND descripcion LIKE :search";
+            }
+
             $sql = "SELECT id_tipo_puesto_comercial, descripcion, estado, id_empresa " .
                    "FROM CONTRATO_TIPO_PUESTO_COMERCIAL " .
-                   "WHERE id_empresa = ? ORDER BY descripcion LIMIT ? OFFSET ?;";
+                   "$whereClause ORDER BY descripcion LIMIT :limit_param OFFSET :offset_param;";
             $stmt = $this->pdo->prepare($sql);
-            $stmt->bindParam(1, Globales::$o_id_empresa, PDO::PARAM_INT);
-            $stmt->bindParam(2, $limit, PDO::PARAM_INT);
-            $stmt->bindParam(3, $offset, PDO::PARAM_INT);
+            $stmt->bindParam(':id_empresa', Globales::$o_id_empresa, PDO::PARAM_INT);
+            $stmt->bindParam(':limit_param', $limit, PDO::PARAM_INT);
+            $stmt->bindParam(':offset_param', $offset, PDO::PARAM_INT);
+            
+            if ($search) {
+                $searchParam = "%$search%";
+                $stmt->bindParam(':search', $searchParam, PDO::PARAM_STR);
+            }
+            
             $stmt->execute();
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {

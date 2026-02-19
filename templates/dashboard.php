@@ -1,50 +1,88 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard | La Vitrina</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <style> body { font-family: 'Inter', sans-serif; } </style>
-</head>
-<body class="bg-gray-100">
+<?php $pageTitle = 'Dashboard | La Vitrina'; require_once __DIR__ . '/partials/header.php'; ?>
 
 <?php require_once __DIR__ . '/partials/navbar.php'; ?>
 
 <!-- Contenido Principal -->
 <div class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
-    <div class="px-4 py-6 sm:px-0">
-        <div class="bg-white overflow-hidden shadow rounded-lg">
-            <div class="p-6">
-                <div class="flex items-center">
-                    <div class="p-3 rounded-full bg-blue-100 text-blue-600 mr-4">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                        </svg>
-                    </div>
-                    <div>
-                        <h3 class="text-lg font-medium text-gray-900">Bienvenido al Módulo Web</h3>
-                        <p class="mt-1 text-sm text-gray-500">Sesión iniciada correctamente. Seleccione una opción del menú para comenzar.</p>
-                    </div>
+    <div class="px-4 sm:px-0">
+        <!-- Welcome Card -->
+        <div class="bg-gradient-to-r from-blue-600 to-blue-800 rounded-2xl shadow-xl shadow-blue-600/20 p-6 mb-6 text-white">
+            <div class="flex items-center gap-4">
+                <div class="w-14 h-14 rounded-2xl bg-white/20 backdrop-blur-sm flex items-center justify-center">
+                    <i class="fa-solid fa-hand-sparkles text-2xl"></i>
                 </div>
+                <div>
+                    <h3 class="text-xl font-bold">Bienvenido al Módulo Web</h3>
+                    <p class="text-blue-100 text-sm">Sesión iniciada correctamente. Seleccione una opción del menú para comenzar.</p>
+                </div>
+            </div>
+        </div>
 
-                <div class="mt-6 border-t border-gray-100 pt-4">
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        <div class="bg-gray-50 p-4 rounded-md">
-                            <span class="text-xs text-gray-500 uppercase tracking-wide font-bold">Sucursal Actual</span>
-                            <p class="text-md font-semibold text-gray-800"><?php echo htmlspecialchars($_SESSION['sucursal'] ?? 'N/A'); ?></p>
-                        </div>
-                        <div class="bg-gray-50 p-4 rounded-md">
-                            <span class="text-xs text-gray-500 uppercase tracking-wide font-bold">Caja Asignada</span>
-                            <p class="text-md font-semibold text-gray-800"><?php echo htmlspecialchars($_SESSION['caja'] ?? 'N/A'); ?></p>
-                        </div>
-                        <div class="bg-gray-50 p-4 rounded-md">
-                            <span class="text-xs text-gray-500 uppercase tracking-wide font-bold">Perfil ID</span>
-                            <p class="text-md font-semibold text-gray-800"><?php echo htmlspecialchars($_SESSION['profile_id'] ?? '0'); ?></p>
-                        </div>
+        <!-- Stats Grid -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
+            <div class="bg-white rounded-xl shadow-lg shadow-slate-200/60 border border-slate-100 p-5">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-xs font-medium text-slate-500 uppercase tracking-wide">Sucursal Actual</p>
+                        <p class="text-lg font-bold text-slate-800 mt-1"><?php echo htmlspecialchars($_SESSION['sucursal'] ?? 'N/A'); ?></p>
+                    </div>
+                    <div class="w-12 h-12 rounded-xl bg-blue-50 flex items-center justify-center">
+                        <i class="fa-solid fa-building text-blue-600"></i>
                     </div>
                 </div>
+            </div>
+            <div class="bg-white rounded-xl shadow-lg shadow-slate-200/60 border border-slate-100 p-5">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-xs font-medium text-slate-500 uppercase tracking-wide">Caja Asignada</p>
+                        <p class="text-lg font-bold text-slate-800 mt-1"><?php echo htmlspecialchars($_SESSION['caja'] ?? 'N/A'); ?></p>
+                    </div>
+                    <div class="w-12 h-12 rounded-xl bg-emerald-50 flex items-center justify-center">
+                        <i class="fa-solid fa-cash-register text-emerald-600"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="bg-white rounded-xl shadow-lg shadow-slate-200/60 border border-slate-100 p-5">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-xs font-medium text-slate-500 uppercase tracking-wide">Perfil</p>
+                        <p class="text-lg font-bold text-slate-800 mt-1"><?php echo htmlspecialchars($_SESSION['profile_id'] ?? '0'); ?></p>
+                    </div>
+                    <div class="w-12 h-12 rounded-xl bg-purple-50 flex items-center justify-center">
+                        <i class="fa-solid fa-user-shield text-purple-600"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="bg-white rounded-2xl shadow-xl shadow-slate-200/60 border border-slate-100 p-6">
+            <h4 class="text-lg font-bold text-slate-800 mb-4">Accesos Rápidos</h4>
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                <a href="/contratos/listado" class="flex flex-col items-center gap-2 p-4 rounded-xl bg-slate-50 hover:bg-blue-50 hover:shadow-md transition-all duration-200 group">
+                    <div class="w-12 h-12 rounded-xl bg-blue-100 group-hover:bg-blue-200 flex items-center justify-center transition-colors">
+                        <i class="fa-solid fa-file-contract text-blue-600 text-xl"></i>
+                    </div>
+                    <span class="text-sm font-medium text-slate-700 group-hover:text-blue-700">Contratos</span>
+                </a>
+                <a href="/mantenimiento/arrendatarios" class="flex flex-col items-center gap-2 p-4 rounded-xl bg-slate-50 hover:bg-emerald-50 hover:shadow-md transition-all duration-200 group">
+                    <div class="w-12 h-12 rounded-xl bg-emerald-100 group-hover:bg-emerald-200 flex items-center justify-center transition-colors">
+                        <i class="fa-solid fa-users text-emerald-600 text-xl"></i>
+                    </div>
+                    <span class="text-sm font-medium text-slate-700 group-hover:text-emerald-700">Arrendatarios</span>
+                </a>
+                <a href="/mantenimiento/arrendadores" class="flex flex-col items-center gap-2 p-4 rounded-xl bg-slate-50 hover:bg-purple-50 hover:shadow-md transition-all duration-200 group">
+                    <div class="w-12 h-12 rounded-xl bg-purple-100 group-hover:bg-purple-200 flex items-center justify-center transition-colors">
+                        <i class="fa-solid fa-building-user text-purple-600 text-xl"></i>
+                    </div>
+                    <span class="text-sm font-medium text-slate-700 group-hover:text-purple-700">Arrendadores</span>
+                </a>
+                <a href="/mantenimiento/puesto_comercial" class="flex flex-col items-center gap-2 p-4 rounded-xl bg-slate-50 hover:bg-amber-50 hover:shadow-md transition-all duration-200 group">
+                    <div class="w-12 h-12 rounded-xl bg-amber-100 group-hover:bg-amber-200 flex items-center justify-center transition-colors">
+                        <i class="fa-solid fa-shop text-amber-600 text-xl"></i>
+                    </div>
+                    <span class="text-sm font-medium text-slate-700 group-hover:text-amber-700">Puestos</span>
+                </a>
             </div>
         </div>
     </div>

@@ -23,12 +23,13 @@ class MantenimientoController {
         $records_per_page = 10;
         $current_page = isset($_GET['page']) && is_numeric($_GET['page']) ? (int)$_GET['page'] : 1;
         $offset = ($current_page - 1) * $records_per_page;
+        $search = isset($_GET['search']) ? trim($_GET['search']) : null;
 
         try {
             $model = new TipoPuestoComercial();
-            $total_records = $model->getTotalRecords();
+            $total_records = $model->getTotalRecords($search);
             $total_pages = ceil($total_records / $records_per_page);
-            $tiposPuesto = $model->getPaginatedRecords($records_per_page, $offset);
+            $tiposPuesto = $model->getPaginatedRecords($records_per_page, $offset, $search);
         } catch (Exception $e) {
             error_log("Error al obtener tipos de puesto comercial: " . $e->getMessage());
             $error = "No se pudieron cargar los tipos de puesto comercial: " . $e->getMessage();
@@ -51,13 +52,14 @@ class MantenimientoController {
         $records_per_page = 10;
         $current_page = isset($_GET['page']) && is_numeric($_GET['page']) ? (int)$_GET['page'] : 1;
         $offset = ($current_page - 1) * $records_per_page;
-        $filtroEstado = 1; // 1 = activos (vigentes)
+        $filtroEstado = isset($_GET['estado']) && is_numeric($_GET['estado']) ? (int)$_GET['estado'] : 1;
+        $search = isset($_GET['search']) ? trim($_GET['search']) : null;
 
         try {
             $model = new PuestoComercial();
-            $total_records = $model->getTotalRecords($filtroEstado);
+            $total_records = $model->getTotalRecords($filtroEstado, $search);
             $total_pages = ceil($total_records / $records_per_page);
-            $puestosComerciales = $model->getPaginatedRecords($filtroEstado, $records_per_page, $offset);
+            $puestosComerciales = $model->getPaginatedRecords($filtroEstado, $records_per_page, $offset, $search);
         } catch (Exception $e) {
             error_log("Error al obtener puestos comerciales: " . $e->getMessage());
             $error = "No se pudieron cargar los puestos comerciales: " . $e->getMessage();
@@ -80,12 +82,13 @@ class MantenimientoController {
         $records_per_page = 10;
         $current_page = isset($_GET['page']) && is_numeric($_GET['page']) ? (int)$_GET['page'] : 1;
         $offset = ($current_page - 1) * $records_per_page;
+        $search = isset($_GET['search']) ? trim($_GET['search']) : null;
 
         try {
             $model = new Arrendador();
-            $total_records = $model->getTotalRecords();
+            $total_records = $model->getTotalRecords($search);
             $total_pages = ceil($total_records / $records_per_page);
-            $arrendadores = $model->getPaginatedRecords($records_per_page, $offset);
+            $arrendadores = $model->getPaginatedRecords($records_per_page, $offset, $search);
         } catch (Exception $e) {
             error_log("Error al obtener arrendadores: " . $e->getMessage());
             $error = "No se pudieron cargar los arrendadores: " . $e->getMessage();
@@ -108,13 +111,14 @@ class MantenimientoController {
         $records_per_page = 10;
         $current_page = isset($_GET['page']) && is_numeric($_GET['page']) ? (int)$_GET['page'] : 1;
         $offset = ($current_page - 1) * $records_per_page;
-        $filtroEstado = 1; // 1 = activos (vigentes)
+        $filtroEstado = isset($_GET['estado']) && is_numeric($_GET['estado']) ? (int)$_GET['estado'] : 1;
+        $search = isset($_GET['search']) ? trim($_GET['search']) : null;
 
         try {
             $model = new Arrendatario();
-            $total_records = $model->getTotalRecords($filtroEstado);
+            $total_records = $model->getTotalRecords($filtroEstado, $search);
             $total_pages = ceil($total_records / $records_per_page);
-            $arrendatarios = $model->getPaginatedRecords($filtroEstado, $records_per_page, $offset);
+            $arrendatarios = $model->getPaginatedRecords($filtroEstado, $records_per_page, $offset, $search);
         } catch (Exception $e) {
             error_log("Error al obtener arrendatarios: " . $e->getMessage());
             $error = "No se pudieron cargar los arrendatarios: " . $e->getMessage();
