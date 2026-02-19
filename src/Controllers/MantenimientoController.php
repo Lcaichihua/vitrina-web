@@ -6,6 +6,7 @@ use Vitrina\Models\PuestoComercial;
 use Vitrina\Models\Arrendador;
 use Vitrina\Models\Arrendatario;
 use Vitrina\Models\Contrato; // Añadir esta línea
+use Vitrina\Lib\Globales;
 use Exception;
 
 class MantenimientoController {
@@ -146,7 +147,7 @@ class MantenimientoController {
         $idTipoContrato = isset($_GET['id_tipo_contrato']) && is_numeric($_GET['id_tipo_contrato']) ? (int)$_GET['id_tipo_contrato'] : null;
 
         if ($pieIngreso === 'TODOS') {
-            $pieIngreso = null; // No filtrar por pie de ingreso
+            $pieIngreso = null;
         }
 
         try {

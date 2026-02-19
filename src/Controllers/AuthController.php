@@ -70,8 +70,8 @@ class AuthController {
                                 $_SESSION['igv'] = $user['igv'] ?? 0.18;
 
                                 // Set Globales::$o_id_empresa
-                                Globales::$o_id_empresa = $empresaId; // Add this line
-
+                                Globales::$o_id_empresa = $empresaId;
+                                
                                 header('Location: /dashboard');
                                 exit;
                             } else {
