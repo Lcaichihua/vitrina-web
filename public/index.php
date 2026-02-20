@@ -87,6 +87,79 @@ switch ($uri) {
         $controller->contratos();
         break;
 
+    // ============ RUTAS CRUD ============
+    case '/mantenimiento/tipo_puesto/guardar':
+        if (!isset($_SESSION['user_id'])) {
+            header('Location: /');
+            exit;
+        }
+        $controller = new MantenimientoController();
+        $controller->tipoPuestoGuardar();
+        break;
+
+    case '/mantenimiento/tipo_puesto/eliminar':
+        if (!isset($_SESSION['user_id'])) {
+            header('Location: /');
+            exit;
+        }
+        $controller = new MantenimientoController();
+        $controller->tipoPuestoEliminar();
+        break;
+
+    case '/mantenimiento/puesto/guardar':
+        if (!isset($_SESSION['user_id'])) {
+            header('Location: /');
+            exit;
+        }
+        $controller = new MantenimientoController();
+        $controller->puestoGuardar();
+        break;
+
+    case '/mantenimiento/puesto/eliminar':
+        if (!isset($_SESSION['user_id'])) {
+            header('Location: /');
+            exit;
+        }
+        $controller = new MantenimientoController();
+        $controller->puestoEliminar();
+        break;
+
+    case '/mantenimiento/arrendador/guardar':
+        if (!isset($_SESSION['user_id'])) {
+            header('Location: /');
+            exit;
+        }
+        $controller = new MantenimientoController();
+        $controller->arrendadorGuardar();
+        break;
+
+    case '/mantenimiento/arrendador/eliminar':
+        if (!isset($_SESSION['user_id'])) {
+            header('Location: /');
+            exit;
+        }
+        $controller = new MantenimientoController();
+        $controller->arrendadorEliminar();
+        break;
+
+    case '/mantenimiento/arrendatario/guardar':
+        if (!isset($_SESSION['user_id'])) {
+            header('Location: /');
+            exit;
+        }
+        $controller = new MantenimientoController();
+        $controller->arrendatarioGuardar();
+        break;
+
+    case '/mantenimiento/arrendatario/eliminar':
+        if (!isset($_SESSION['user_id'])) {
+            header('Location: /');
+            exit;
+        }
+        $controller = new MantenimientoController();
+        $controller->arrendatarioEliminar();
+        break;
+
     default:
         http_response_code(404);
         echo "<h1>404 - Página no encontrada</h1>";

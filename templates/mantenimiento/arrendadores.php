@@ -33,7 +33,7 @@
                 <h3 class="text-2xl font-bold text-slate-800">Arrendadores</h3>
                 <p class="text-sm text-slate-500 mt-1">Gestiona los arrendadores del sistema</p>
             </div>
-            <button class="group relative inline-flex items-center gap-2.5 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-semibold py-2.5 px-5 rounded-xl shadow-lg shadow-blue-600/25 transition-all duration-200 hover:shadow-blue-600/40 hover:-translate-y-0.5 active:translate-y-0 active:shadow-md">
+            <button onclick="openNewModal()" class="group relative inline-flex items-center gap-2.5 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-semibold py-2.5 px-5 rounded-xl shadow-lg shadow-blue-600/25 transition-all duration-200 hover:shadow-blue-600/40 hover:-translate-y-0.5 active:translate-y-0 active:shadow-md">
                 <span class="absolute inset-0 rounded-xl bg-white/20 opacity-0 group-hover:opacity-100 transition-opacity"></span>
                 <span class="w-5 h-5 rounded-full bg-white/20 flex items-center justify-center">
                     <i class="fa-solid fa-plus text-xs"></i>
@@ -41,6 +41,26 @@
                 Nuevo Arrendador
             </button>
         </div>
+
+        <?php if (isset($_SESSION['success'])): ?>
+            <div class="bg-emerald-50 border-l-4 border-emerald-500 p-4 rounded-r-lg mb-6 animate-pulse">
+                <div class="flex items-center gap-3">
+                    <i class="fa-solid fa-circle-check text-emerald-500"></i>
+                    <p class="text-emerald-700 font-medium"><?php echo htmlspecialchars($_SESSION['success']); ?></p>
+                </div>
+            </div>
+            <?php unset($_SESSION['success']); ?>
+        <?php endif; ?>
+
+        <?php if (isset($_SESSION['error'])): ?>
+            <div class="bg-red-50 border-l-4 border-red-500 p-4 rounded-r-lg mb-6 animate-pulse">
+                <div class="flex items-center gap-3">
+                    <i class="fa-solid fa-circle-exclamation text-red-500"></i>
+                    <p class="text-red-700 font-medium"><?php echo htmlspecialchars($_SESSION['error']); ?></p>
+                </div>
+            </div>
+            <?php unset($_SESSION['error']); ?>
+        <?php endif; ?>
 
         <?php if (isset($error) && $error): ?>
             <div class="bg-red-50 border-l-4 border-red-500 p-4 rounded-r-lg mb-6 animate-pulse">
@@ -125,10 +145,10 @@
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap">
                                         <div class="flex items-center justify-center gap-2">
-                                            <button class="p-2 text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors" title="Editar">
+                                            <button class="p-2 text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors" title="Editar" onclick="openEditModal(<?php echo $arrendador['id_arrendador']; ?>, '<?php echo htmlspecialchars($arrendador['abrev_doc']); ?>', '<?php echo htmlspecialchars($arrendador['numero_documento']); ?>', '<?php echo htmlspecialchars($arrendador['apellidos']); ?>', '<?php echo htmlspecialchars($arrendador['nombres']); ?>', '<?php echo htmlspecialchars($arrendador['direccion']); ?>')">
                                                 <i class="fa-solid fa-pen-to-square"></i>
                                             </button>
-                                            <button class="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors" title="Eliminar">
+                                            <button class="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors" title="Eliminar" onclick="confirmDelete(<?php echo $arrendador['id_arrendador']; ?>, '<?php echo htmlspecialchars($arrendador['apellidos'] . ' ' . $arrendador['nombres']); ?>')">
                                                 <i class="fa-solid fa-trash"></i>
                                             </button>
                                         </div>
@@ -170,6 +190,131 @@
     </div>
 </div>
 </div>
+
+<!-- Modal Nuevo/Editar Arrendador -->
+<div id="arrendadorModal" class="fixed inset-0 z-50 hidden">
+    <div class="fixed inset-0 bg-black/50 backdrop-blur-sm" onclick="closeModal()"></div>
+    <div class="fixed inset-0 flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto">
+            <div class="p-6">
+                <div class="flex items-center justify-between mb-6">
+                    <h3 class="text-xl font-bold text-slate-800" id="modalTitle">Nuevo Arrendador</h3>
+                    <button onclick="closeModal()" class="p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-lg transition-colors">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                </div>
+                <form id="arrendadorForm" method="POST" action="/mantenimiento/arrendador/guardar">
+                    <input type="hidden" name="id" id="arrendadorId">
+                    <div class="space-y-4">
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label for="tipoDoc" class="block text-sm font-medium text-slate-700 mb-1">Tipo Documento</label>
+                                <select name="tipoDoc" id="tipoDoc" required class="w-full px-4 py-2.5 border border-slate-200 rounded-xl text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500">
+                                    <option value="DNI">DNI</option>
+                                    <option value="RUC">RUC</option>
+                                    <option value="CE">Carnet Extranjería</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label for="numeroDoc" class="block text-sm font-medium text-slate-700 mb-1">Nº Documento</label>
+                                <input type="text" name="numeroDoc" id="numeroDoc" required class="w-full px-4 py-2.5 border border-slate-200 rounded-xl text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500" placeholder="Nº documento">
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label for="apellidos" class="block text-sm font-medium text-slate-700 mb-1">Apellidos</label>
+                                <input type="text" name="apellidos" id="apellidos" required class="w-full px-4 py-2.5 border border-slate-200 rounded-xl text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500" placeholder="Apellidos">
+                            </div>
+                            <div>
+                                <label for="nombres" class="block text-sm font-medium text-slate-700 mb-1">Nombres</label>
+                                <input type="text" name="nombres" id="nombres" required class="w-full px-4 py-2.5 border border-slate-200 rounded-xl text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500" placeholder="Nombres">
+                            </div>
+                        </div>
+                        <div>
+                            <label for="direccion" class="block text-sm font-medium text-slate-700 mb-1">Dirección</label>
+                            <input type="text" name="direccion" id="direccion" class="w-full px-4 py-2.5 border border-slate-200 rounded-xl text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500" placeholder="Dirección">
+                        </div>
+                    </div>
+                    <div class="flex gap-3 mt-6">
+                        <button type="button" onclick="closeModal()" class="flex-1 px-4 py-2.5 bg-slate-100 text-slate-700 font-medium rounded-xl hover:bg-slate-200 transition-colors">
+                            Cancelar
+                        </button>
+                        <button type="submit" class="flex-1 px-4 py-2.5 bg-blue-600 text-white font-medium rounded-xl hover:bg-blue-700 transition-colors">
+                            Guardar
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Confirmar Eliminación -->
+<div id="deleteModal" class="fixed inset-0 z-50 hidden">
+    <div class="fixed inset-0 bg-black/50 backdrop-blur-sm" onclick="closeDeleteModal()"></div>
+    <div class="fixed inset-0 flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-sm">
+            <div class="p-6 text-center">
+                <div class="w-16 h-16 mx-auto mb-4 rounded-full bg-red-100 flex items-center justify-center">
+                    <i class="fa-solid fa-triangle-exclamation text-2xl text-red-600"></i>
+                </div>
+                <h3 class="text-lg font-bold text-slate-800 mb-2">Confirmar Eliminación</h3>
+                <p class="text-sm text-slate-600 mb-6" id="deleteMessage">¿Está seguro de que desea eliminar este registro?</p>
+                <div class="flex gap-3">
+                    <button onclick="closeDeleteModal()" class="flex-1 px-4 py-2.5 bg-slate-100 text-slate-700 font-medium rounded-xl hover:bg-slate-200 transition-colors">
+                        Cancelar
+                    </button>
+                    <a id="deleteBtn" href="#" class="flex-1 px-4 py-2.5 bg-red-600 text-white font-medium rounded-xl hover:bg-red-700 transition-colors">
+                        Eliminar
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function openNewModal() {
+        document.getElementById('modalTitle').textContent = 'Nuevo Arrendador';
+        document.getElementById('arrendadorId').value = '';
+        document.getElementById('tipoDoc').value = 'DNI';
+        document.getElementById('numeroDoc').value = '';
+        document.getElementById('apellidos').value = '';
+        document.getElementById('nombres').value = '';
+        document.getElementById('direccion').value = '';
+        document.getElementById('arrendadorModal').classList.remove('hidden');
+        document.getElementById('arrendadorModal').style.display = 'flex';
+    }
+
+    function openEditModal(id, tipoDoc, numeroDoc, apellidos, nombres, direccion) {
+        document.getElementById('modalTitle').textContent = 'Editar Arrendador';
+        document.getElementById('arrendadorId').value = id;
+        document.getElementById('tipoDoc').value = tipoDoc;
+        document.getElementById('numeroDoc').value = numeroDoc;
+        document.getElementById('apellidos').value = apellidos;
+        document.getElementById('nombres').value = nombres;
+        document.getElementById('direccion').value = direccion;
+        document.getElementById('arrendadorModal').classList.remove('hidden');
+        document.getElementById('arrendadorModal').style.display = 'flex';
+    }
+
+    function closeModal() {
+        document.getElementById('arrendadorModal').classList.add('hidden');
+        document.getElementById('arrendadorModal').style.display = 'none';
+    }
+
+    function confirmDelete(id, nombre) {
+        document.getElementById('deleteMessage').textContent = '¿Está seguro de eliminar a "' + nombre + '"? Esta acción no se puede deshacer.';
+        document.getElementById('deleteBtn').href = '/mantenimiento/arrendador/eliminar?id=' + id;
+        document.getElementById('deleteModal').classList.remove('hidden');
+        document.getElementById('deleteModal').style.display = 'flex';
+    }
+
+    function closeDeleteModal() {
+        document.getElementById('deleteModal').classList.add('hidden');
+        document.getElementById('deleteModal').style.display = 'none';
+    }
+</script>
 
 </body>
 </html>

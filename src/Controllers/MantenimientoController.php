@@ -171,4 +171,262 @@ class MantenimientoController {
         // Pasar las variables a la vista
         require_once __DIR__ . '/../../templates/contratos/listado.php';
     }
+
+    // ============ TIPO PUESTO COMERCIAL ============
+    public function tipoPuestoGuardar() {
+        if (!isset($_SESSION['user_id'])) {
+            header('Location: /login');
+            exit;
+        }
+
+        $id = isset($_POST['id']) ? (int)$_POST['id'] : null;
+        $descripcion = trim($_POST['descripcion'] ?? '');
+        $estado = isset($_POST['estado']) ? (int)$_POST['estado'] : 1;
+
+        if (empty($descripcion)) {
+            $_SESSION['error'] = 'La descripción es requerida';
+            header('Location: /mantenimiento/tipo_puesto_comercial');
+            exit;
+        }
+
+        try {
+            $model = new TipoPuestoComercial();
+            if ($id) {
+                $model->update($id, $descripcion, $estado);
+                $_SESSION['success'] = 'Tipo de puesto actualizado correctamente';
+            } else {
+                $model->create($descripcion, $estado);
+                $_SESSION['success'] = 'Tipo de puesto creado correctamente';
+            }
+        } catch (Exception $e) {
+            error_log("Error al guardar tipo puesto: " . $e->getMessage());
+            $_SESSION['error'] = 'Error al guardar: ' . $e->getMessage();
+        }
+
+        header('Location: /mantenimiento/tipo_puesto_comercial');
+        exit;
+    }
+
+    public function tipoPuestoEliminar() {
+        if (!isset($_SESSION['user_id'])) {
+            header('Location: /login');
+            exit;
+        }
+
+        $id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
+
+        if ($id <= 0) {
+            $_SESSION['error'] = 'ID inválido';
+            header('Location: /mantenimiento/tipo_puesto_comercial');
+            exit;
+        }
+
+        try {
+            $model = new TipoPuestoComercial();
+            $model->delete($id);
+            $_SESSION['success'] = 'Tipo de puesto eliminado correctamente';
+        } catch (Exception $e) {
+            error_log("Error al eliminar tipo puesto: " . $e->getMessage());
+            $_SESSION['error'] = 'Error al eliminar: ' . $e->getMessage();
+        }
+
+        header('Location: /mantenimiento/tipo_puesto_comercial');
+        exit;
+    }
+
+    // ============ PUESTO COMERCIAL ============
+    public function puestoGuardar() {
+        if (!isset($_SESSION['user_id'])) {
+            header('Location: /login');
+            exit;
+        }
+
+        $id = isset($_POST['id']) ? (int)$_POST['id'] : null;
+        $tipoPuesto = trim($_POST['tipoPuesto'] ?? '');
+        $sucursal = trim($_POST['sucursal'] ?? '');
+        $interior = trim($_POST['interior'] ?? '');
+        $observacion = trim($_POST['observacion'] ?? '');
+        $estado = isset($_POST['estado']) ? (int)$_POST['estado'] : 1;
+
+        if (empty($tipoPuesto) || empty($sucursal) || empty($interior)) {
+            $_SESSION['error'] = 'Los campos tipo puesto, sucursal e interior son requeridos';
+            header('Location: /mantenimiento/puesto_comercial');
+            exit;
+        }
+
+        try {
+            $model = new PuestoComercial();
+            if ($id) {
+                $model->update($id, $tipoPuesto, $sucursal, $interior, $observacion, $estado);
+                $_SESSION['success'] = 'Puesto actualizado correctamente';
+            } else {
+                $model->create($tipoPuesto, $sucursal, $interior, $observacion, $estado);
+                $_SESSION['success'] = 'Puesto creado correctamente';
+            }
+        } catch (Exception $e) {
+            error_log("Error al guardar puesto: " . $e->getMessage());
+            $_SESSION['error'] = 'Error al guardar: ' . $e->getMessage();
+        }
+
+        header('Location: /mantenimiento/puesto_comercial');
+        exit;
+    }
+
+    public function puestoEliminar() {
+        if (!isset($_SESSION['user_id'])) {
+            header('Location: /login');
+            exit;
+        }
+
+        $id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
+
+        if ($id <= 0) {
+            $_SESSION['error'] = 'ID inválido';
+            header('Location: /mantenimiento/puesto_comercial');
+            exit;
+        }
+
+        try {
+            $model = new PuestoComercial();
+            $model->delete($id);
+            $_SESSION['success'] = 'Puesto eliminado correctamente';
+        } catch (Exception $e) {
+            error_log("Error al eliminar puesto: " . $e->getMessage());
+            $_SESSION['error'] = 'Error al eliminar: ' . $e->getMessage();
+        }
+
+        header('Location: /mantenimiento/puesto_comercial');
+        exit;
+    }
+
+    // ============ ARRENDADOR ============
+    public function arrendadorGuardar() {
+        if (!isset($_SESSION['user_id'])) {
+            header('Location: /login');
+            exit;
+        }
+
+        $id = isset($_POST['id']) ? (int)$_POST['id'] : null;
+        $tipoDoc = trim($_POST['tipoDoc'] ?? 'DNI');
+        $numeroDoc = trim($_POST['numeroDoc'] ?? '');
+        $apellidos = trim($_POST['apellidos'] ?? '');
+        $nombres = trim($_POST['nombres'] ?? '');
+        $direccion = trim($_POST['direccion'] ?? '');
+
+        if (empty($numeroDoc) || empty($apellidos) || empty($nombres)) {
+            $_SESSION['error'] = 'Los campos documento, apellidos y nombres son requeridos';
+            header('Location: /mantenimiento/arrendadores');
+            exit;
+        }
+
+        try {
+            $model = new Arrendador();
+            if ($id) {
+                $model->update($id, $tipoDoc, $numeroDoc, $apellidos, $nombres, $direccion);
+                $_SESSION['success'] = 'Arrendador actualizado correctamente';
+            } else {
+                $model->create($tipoDoc, $numeroDoc, $apellidos, $nombres, $direccion);
+                $_SESSION['success'] = 'Arrendador creado correctamente';
+            }
+        } catch (Exception $e) {
+            error_log("Error al guardar arrendador: " . $e->getMessage());
+            $_SESSION['error'] = 'Error al guardar: ' . $e->getMessage();
+        }
+
+        header('Location: /mantenimiento/arrendadores');
+        exit;
+    }
+
+    public function arrendadorEliminar() {
+        if (!isset($_SESSION['user_id'])) {
+            header('Location: /login');
+            exit;
+        }
+
+        $id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
+
+        if ($id <= 0) {
+            $_SESSION['error'] = 'ID inválido';
+            header('Location: /mantenimiento/arrendadores');
+            exit;
+        }
+
+        try {
+            $model = new Arrendador();
+            $model->delete($id);
+            $_SESSION['success'] = 'Arrendador eliminado correctamente';
+        } catch (Exception $e) {
+            error_log("Error al eliminar arrendador: " . $e->getMessage());
+            $_SESSION['error'] = 'Error al eliminar: ' . $e->getMessage();
+        }
+
+        header('Location: /mantenimiento/arrendadores');
+        exit;
+    }
+
+    // ============ ARRENDATARIO ============
+    public function arrendatarioGuardar() {
+        if (!isset($_SESSION['user_id'])) {
+            header('Location: /login');
+            exit;
+        }
+
+        $id = isset($_POST['id']) ? (int)$_POST['id'] : null;
+        $tipoDoc = trim($_POST['tipoDoc'] ?? 'DNI');
+        $numeroDoc = trim($_POST['numeroDoc'] ?? '');
+        $apellidos = trim($_POST['apellidos'] ?? '');
+        $nombres = trim($_POST['nombres'] ?? '');
+        $direccion = trim($_POST['direccion'] ?? '');
+        $estado = isset($_POST['estado']) ? (int)$_POST['estado'] : 1;
+
+        if (empty($numeroDoc) || empty($apellidos) || empty($nombres)) {
+            $_SESSION['error'] = 'Los campos documento, apellidos y nombres son requeridos';
+            header('Location: /mantenimiento/arrendatarios');
+            exit;
+        }
+
+        try {
+            $model = new Arrendatario();
+            if ($id) {
+                $model->update($id, $tipoDoc, $numeroDoc, $apellidos, $nombres, $direccion, $estado);
+                $_SESSION['success'] = 'Arrendatario actualizado correctamente';
+            } else {
+                $model->create($tipoDoc, $numeroDoc, $apellidos, $nombres, $direccion, $estado);
+                $_SESSION['success'] = 'Arrendatario creado correctamente';
+            }
+        } catch (Exception $e) {
+            error_log("Error al guardar arrendatario: " . $e->getMessage());
+            $_SESSION['error'] = 'Error al guardar: ' . $e->getMessage();
+        }
+
+        header('Location: /mantenimiento/arrendatarios');
+        exit;
+    }
+
+    public function arrendatarioEliminar() {
+        if (!isset($_SESSION['user_id'])) {
+            header('Location: /login');
+            exit;
+        }
+
+        $id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
+
+        if ($id <= 0) {
+            $_SESSION['error'] = 'ID inválido';
+            header('Location: /mantenimiento/arrendatarios');
+            exit;
+        }
+
+        try {
+            $model = new Arrendatario();
+            $model->delete($id);
+            $_SESSION['success'] = 'Arrendatario eliminado correctamente';
+        } catch (Exception $e) {
+            error_log("Error al eliminar arrendatario: " . $e->getMessage());
+            $_SESSION['error'] = 'Error al eliminar: ' . $e->getMessage();
+        }
+
+        header('Location: /mantenimiento/arrendatarios');
+        exit;
+    }
 }

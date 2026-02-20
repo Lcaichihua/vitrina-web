@@ -4,6 +4,7 @@ namespace Vitrina\Models;
 use Database;
 use PDO;
 use PDOException;
+use Exception;
 use Vitrina\Lib\Globales;
 
 class PuestoComercial {
@@ -121,6 +122,92 @@ class PuestoComercial {
         } catch (PDOException $e) {
             error_log("Error en PuestoComercial::getPaginatedRecords: " . $e->getMessage());
             return [];
+        }
+    }
+
+    public function create(string $tipoPuesto, string $sucursal, string $interior, string $observacion = '', int $estado = 1): int {
+        try {
+            $sqlId = "SELECT IFNULL(MAX(id_puesto_comercial), 0) + 1 FROM CONTRATO_PUESTO_COMERCIAL WHERE id_empresa = :id_empresa";
+            $stmtId = $this->pdo->prepare($sqlId);
+            $stmtId->bindParam(':id_empresa', Globales::$o_id_empresa, PDO::PARAM_INT);
+            $stmtId->execute();
+            $newId = $stmtId->fetchColumn();
+
+            $sqlTipo = "SELECT id_tipo_puesto_comercial FROM CONTRATO_TIPO_PUESTO_COMERCIAL WHERE descripcion = :descripcion AND id_empresa = :id_empresa LIMIT 1";
+            $stmtTipo = $this->pdo->prepare($sqlTipo);
+            $stmtTipo->bindParam(':descripcion', $tipoPuesto, PDO::PARAM_STR);
+            $stmtTipo->bindParam(':id_empresa', Globales::$o_id_empresa, PDO::PARAM_INT);
+            $stmtTipo->execute();
+            $tipoId = $stmtTipo->fetchColumn();
+
+            $sqlSuc = "SELECT sucursalid FROM sucursal WHERE descripcion = :descripcion AND id_empresa = :id_empresa LIMIT 1";
+            $stmtSuc = $this->pdo->prepare($sqlSuc);
+            $stmtSuc->bindParam(':descripcion', $sucursal, PDO::PARAM_STR);
+            $stmtSuc->bindParam(':id_empresa', Globales::$o_id_empresa, PDO::PARAM_INT);
+            $stmtSuc->execute();
+            $sucursalId = $stmtSuc->fetchColumn();
+
+            $sql = "INSERT INTO CONTRATO_PUESTO_COMERCIAL (id_puesto_comercial, id_tipo_puesto_comercial, sucursalid, interior, observacion, estado, id_empresa) 
+                    VALUES (:id, :tipo_id, :sucursal_id, :interior, :observacion, :estado, :id_empresa)";
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->bindParam(':id', $newId, PDO::PARAM_INT);
+            $stmt->bindParam(':tipo_id', $tipoId, PDO::PARAM_INT);
+            $stmt->bindParam(':sucursal_id', $sucursalId, PDO::PARAM_INT);
+            $stmt->bindParam(':interior', $interior, PDO::PARAM_STR);
+            $stmt->bindParam(':observacion', $observacion, PDO::PARAM_STR);
+            $stmt->bindParam(':estado', $estado, PDO::PARAM_INT);
+            $stmt->bindParam(':id_empresa', Globales::$o_id_empresa, PDO::PARAM_INT);
+            $stmt->execute();
+            return (int)$newId;
+        } catch (PDOException $e) {
+            error_log("Error en PuestoComercial::create: " . $e->getMessage());
+            throw new Exception("Error al crear puesto comercial");
+        }
+    }
+
+    public function update(int $id, string $tipoPuesto, string $sucursal, string $interior, string $observacion = '', int $estado = 1): bool {
+        try {
+            $sqlTipo = "SELECT id_tipo_puesto_comercial FROM CONTRATO_TIPO_PUESTO_COMERCIAL WHERE descripcion = :descripcion AND id_empresa = :id_empresa LIMIT 1";
+            $stmtTipo = $this->pdo->prepare($sqlTipo);
+            $stmtTipo->bindParam(':descripcion', $tipoPuesto, PDO::PARAM_STR);
+            $stmtTipo->bindParam(':id_empresa', Globales::$o_id_empresa, PDO::PARAM_INT);
+            $stmtTipo->execute();
+            $tipoId = $stmtTipo->fetchColumn();
+
+            $sqlSuc = "SELECT sucursalid FROM sucursal WHERE descripcion = :descripcion AND id_empresa = :id_empresa LIMIT 1";
+            $stmtSuc = $this->pdo->prepare($sqlSuc);
+            $stmtSuc->bindParam(':descripcion', $sucursal, PDO::PARAM_STR);
+            $stmtSuc->bindParam(':id_empresa', Globales::$o_id_empresa, PDO::PARAM_INT);
+            $stmtSuc->execute();
+            $sucursalId = $stmtSuc->fetchColumn();
+
+            $sql = "UPDATE CONTRATO_PUESTO_COMERCIAL SET id_tipo_puesto_comercial = :tipo_id, sucursalid = :sucursal_id, interior = :interior, observacion = :observacion, estado = :estado 
+                    WHERE id_puesto_comercial = :id AND id_empresa = :id_empresa";
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->bindParam(':tipo_id', $tipoId, PDO::PARAM_INT);
+            $stmt->bindParam(':sucursal_id', $sucursalId, PDO::PARAM_INT);
+            $stmt->bindParam(':interior', $interior, PDO::PARAM_STR);
+            $stmt->bindParam(':observacion', $observacion, PDO::PARAM_STR);
+            $stmt->bindParam(':estado', $estado, PDO::PARAM_INT);
+            $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+            $stmt->bindParam(':id_empresa', Globales::$o_id_empresa, PDO::PARAM_INT);
+            return $stmt->execute();
+        } catch (PDOException $e) {
+            error_log("Error en PuestoComercial::update: " . $e->getMessage());
+            throw new Exception("Error al actualizar puesto comercial");
+        }
+    }
+
+    public function delete(int $id): bool {
+        try {
+            $sql = "DELETE FROM CONTRATO_PUESTO_COMERCIAL WHERE id_puesto_comercial = :id AND id_empresa = :id_empresa";
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+            $stmt->bindParam(':id_empresa', Globales::$o_id_empresa, PDO::PARAM_INT);
+            return $stmt->execute();
+        } catch (PDOException $e) {
+            error_log("Error en PuestoComercial::delete: " . $e->getMessage());
+            throw new Exception("Error al eliminar puesto comercial");
         }
     }
 }

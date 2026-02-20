@@ -4,6 +4,7 @@ namespace Vitrina\Models;
 use Database;
 use PDO;
 use PDOException;
+use Exception;
 use Vitrina\Lib\Globales;
 
 class Arrendador {
@@ -89,6 +90,72 @@ class Arrendador {
         } catch (PDOException $e) {
             error_log("Error en Arrendador::getPaginatedRecords: " . $e->getMessage());
             return [];
+        }
+    }
+
+    public function create(string $tipoDoc, string $numeroDoc, string $apellidos, string $nombres, string $direccion = ''): int {
+        try {
+            $sqlDocId = "SELECT docident_id FROM TIPODOCIDENTIDAD WHERE abreviatura = :abrev LIMIT 1";
+            $stmtDocId = $this->pdo->prepare($sqlDocId);
+            $stmtDocId->bindParam(':abrev', $tipoDoc, PDO::PARAM_STR);
+            $stmtDocId->execute();
+            $docId = $stmtDocId->fetchColumn();
+
+            $sql = "INSERT INTO CONTRATO_ARRENDADOR (docident_id, numero_documento, abreviatura, apellidos, nombres, direccion, id_empresa) 
+                    VALUES (:doc_id, :numero, :abrev, :apellidos, :nombres, :direccion, :id_empresa)";
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->bindParam(':doc_id', $docId, PDO::PARAM_INT);
+            $stmt->bindParam(':numero', $numeroDoc, PDO::PARAM_STR);
+            $stmt->bindParam(':abrev', $tipoDoc, PDO::PARAM_STR);
+            $stmt->bindParam(':apellidos', $apellidos, PDO::PARAM_STR);
+            $stmt->bindParam(':nombres', $nombres, PDO::PARAM_STR);
+            $stmt->bindParam(':direccion', $direccion, PDO::PARAM_STR);
+            $stmt->bindParam(':id_empresa', Globales::$o_id_empresa, PDO::PARAM_INT);
+            $stmt->execute();
+            return (int)$this->pdo->lastInsertId();
+        } catch (PDOException $e) {
+            error_log("Error en Arrendador::create: " . $e->getMessage());
+            throw new Exception("Error al crear arrendador");
+        }
+    }
+
+    public function update(int $id, string $tipoDoc, string $numeroDoc, string $apellidos, string $nombres, string $direccion = ''): bool {
+        try {
+            $sqlDocId = "SELECT docident_id FROM TIPODOCIDENTIDAD WHERE abreviatura = :abrev LIMIT 1";
+            $stmtDocId = $this->pdo->prepare($sqlDocId);
+            $stmtDocId->bindParam(':abrev', $tipoDoc, PDO::PARAM_STR);
+            $stmtDocId->execute();
+            $docId = $stmtDocId->fetchColumn();
+
+            $sql = "UPDATE CONTRATO_ARRENDADOR SET docident_id = :doc_id, numero_documento = :numero, abreviatura = :abrev, 
+                    apellidos = :apellidos, nombres = :nombres, direccion = :direccion 
+                    WHERE id_arrendador = :id AND id_empresa = :id_empresa";
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->bindParam(':doc_id', $docId, PDO::PARAM_INT);
+            $stmt->bindParam(':numero', $numeroDoc, PDO::PARAM_STR);
+            $stmt->bindParam(':abrev', $tipoDoc, PDO::PARAM_STR);
+            $stmt->bindParam(':apellidos', $apellidos, PDO::PARAM_STR);
+            $stmt->bindParam(':nombres', $nombres, PDO::PARAM_STR);
+            $stmt->bindParam(':direccion', $direccion, PDO::PARAM_STR);
+            $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+            $stmt->bindParam(':id_empresa', Globales::$o_id_empresa, PDO::PARAM_INT);
+            return $stmt->execute();
+        } catch (PDOException $e) {
+            error_log("Error en Arrendador::update: " . $e->getMessage());
+            throw new Exception("Error al actualizar arrendador");
+        }
+    }
+
+    public function delete(int $id): bool {
+        try {
+            $sql = "DELETE FROM CONTRATO_ARRENDADOR WHERE id_arrendador = :id AND id_empresa = :id_empresa";
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+            $stmt->bindParam(':id_empresa', Globales::$o_id_empresa, PDO::PARAM_INT);
+            return $stmt->execute();
+        } catch (PDOException $e) {
+            error_log("Error en Arrendador::delete: " . $e->getMessage());
+            throw new Exception("Error al eliminar arrendador");
         }
     }
 }

@@ -4,6 +4,7 @@ namespace Vitrina\Models;
 use Database;
 use PDO;
 use PDOException;
+use Exception;
 use Vitrina\Lib\Globales;
 
 class TipoPuestoComercial {
@@ -77,6 +78,49 @@ class TipoPuestoComercial {
         } catch (PDOException $e) {
             error_log("Error en TipoPuestoComercial::getPaginatedRecords: " . $e->getMessage());
             return [];
+        }
+    }
+
+    public function create(string $descripcion, int $estado = 1): int {
+        try {
+            $sql = "INSERT INTO CONTRATO_TIPO_PUESTO_COMERCIAL (descripcion, estado, id_empresa) VALUES (:descripcion, :estado, :id_empresa)";
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->bindParam(':descripcion', $descripcion, PDO::PARAM_STR);
+            $stmt->bindParam(':estado', $estado, PDO::PARAM_INT);
+            $stmt->bindParam(':id_empresa', Globales::$o_id_empresa, PDO::PARAM_INT);
+            $stmt->execute();
+            return (int)$this->pdo->lastInsertId();
+        } catch (PDOException $e) {
+            error_log("Error en TipoPuestoComercial::create: " . $e->getMessage());
+            throw new Exception("Error al crear tipo de puesto");
+        }
+    }
+
+    public function update(int $id, string $descripcion, int $estado = 1): bool {
+        try {
+            $sql = "UPDATE CONTRATO_TIPO_PUESTO_COMERCIAL SET descripcion = :descripcion, estado = :estado WHERE id_tipo_puesto_comercial = :id AND id_empresa = :id_empresa";
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->bindParam(':descripcion', $descripcion, PDO::PARAM_STR);
+            $stmt->bindParam(':estado', $estado, PDO::PARAM_INT);
+            $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+            $stmt->bindParam(':id_empresa', Globales::$o_id_empresa, PDO::PARAM_INT);
+            return $stmt->execute();
+        } catch (PDOException $e) {
+            error_log("Error en TipoPuestoComercial::update: " . $e->getMessage());
+            throw new Exception("Error al actualizar tipo de puesto");
+        }
+    }
+
+    public function delete(int $id): bool {
+        try {
+            $sql = "DELETE FROM CONTRATO_TIPO_PUESTO_COMERCIAL WHERE id_tipo_puesto_comercial = :id AND id_empresa = :id_empresa";
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+            $stmt->bindParam(':id_empresa', Globales::$o_id_empresa, PDO::PARAM_INT);
+            return $stmt->execute();
+        } catch (PDOException $e) {
+            error_log("Error en TipoPuestoComercial::delete: " . $e->getMessage());
+            throw new Exception("Error al eliminar tipo de puesto");
         }
     }
 }
