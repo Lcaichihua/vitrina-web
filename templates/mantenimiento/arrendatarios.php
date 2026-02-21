@@ -392,7 +392,7 @@
         // Set department and load provinces
         if (depaId > 0) {
             document.getElementById('departamento').value = String(depaId);
-            loadProvincias(depaId, provId);
+            loadProvincias(depaId, provId, distId);
         } else {
             document.getElementById('departamento').value = '';
             document.getElementById('provincia').innerHTML = '<option value="">Seleccione</option>';
@@ -405,7 +405,7 @@
         document.getElementById('arrendatarioModal').style.display = 'flex';
     }
 
-    function loadProvincias(depaId, selectedProvId = null) {
+    function loadProvincias(depaId, selectedProvId = null, selectedDistId = null) {
         const provinciaSelect = document.getElementById('provincia');
         const distritoSelect = document.getElementById('distrito');
         
@@ -438,7 +438,7 @@
             
             // If we have a selected province, load distritos
             if (selectedProvId) {
-                loadDistritos(selectedProvId);
+                loadDistritos(selectedProvId, selectedDistId);
             } else {
                 distritoSelect.innerHTML = '<option value="">Seleccione</option>';
                 distritoSelect.disabled = true;
