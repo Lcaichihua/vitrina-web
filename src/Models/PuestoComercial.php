@@ -68,57 +68,35 @@ class PuestoComercial {
         }
     }
 
-    public function getPaginatedRecords(int $filtroEstado = 1, int $limit, int $offset, ?string $search = null): array {
+    public function getAllRecords(int $filtroEstado = -1): array {
         try {
-            $whereClause = "WHERE a.id_empresa = :id_empresa_where AND (:filtro_estado_check = -1 OR IFNULL(a.estado,1) = :filtro_estado_value)";
-            
-            if ($search) {
-                $whereClause .= " AND (
-                    a.interior LIKE :search1 
-                    OR b.descripcion LIKE :search2 
-                    OR s.descripcion LIKE :search3
-                    OR a.observacion LIKE :search4
-                )";
-            }
-
-            $sql = "SELECT
-                        a.id_puesto_comercial,
-                        b.id_empresa,
-                        b.id_tipo_puesto_comercial,
-                        b.descripcion AS tipoPuesto,
-                        a.sucursalid,
-                        s.descripcion AS sucursal,
-                        a.interior,
-                        a.observacion,
-                        a.estado
-                    FROM CONTRATO_PUESTO_COMERCIAL a
-                    INNER JOIN CONTRATO_TIPO_PUESTO_COMERCIAL b
-                            ON a.id_tipo_puesto_comercial = b.id_tipo_puesto_comercial
-                           AND b.id_empresa              = :id_empresa_param_b
-                    INNER JOIN sucursal s
-                            ON a.sucursalid = s.sucursalid
-                    $whereClause
-                    ORDER BY s.descripcion, b.descripcion, a.interior
-                    LIMIT :limit_param OFFSET :offset_param;";
-
-            $stmt = $this->pdo->prepare($sql);
-            $stmt->bindParam(':id_empresa_param_b', Globales::$o_id_empresa, PDO::PARAM_INT);
-            $stmt->bindParam(':id_empresa_where', Globales::$o_id_empresa, PDO::PARAM_INT);
-            $stmt->bindParam(':filtro_estado_check', $filtroEstado, PDO::PARAM_INT);
-            $stmt->bindParam(':filtro_estado_value', $filtroEstado, PDO::PARAM_INT);
-            $stmt->bindParam(':limit_param', $limit, PDO::PARAM_INT);
-            $stmt->bindParam(':offset_param', $offset, PDO::PARAM_INT);
-            
-            if ($search) {
-                $searchParam = "%$search%";
-                $stmt->bindParam(':search1', $searchParam, PDO::PARAM_STR);
-                $stmt->bindParam(':search2', $searchParam, PDO::PARAM_STR);
-                $stmt->bindParam(':search3', $searchParam, PDO::PARAM_STR);
-                $stmt->bindParam(':search4', $searchParam, PDO::PARAM_STR);
-            }
-            
+            $stmt = $this->pdo->prepare("CALL USP_PuestoComercial_Listar(?, ?)");
+            $stmt->bindParam(1, Globales::$o_id_empresa, PDO::PARAM_INT);
+            $stmt->bindParam(2, $filtroEstado, PDO::PARAM_INT);
             $stmt->execute();
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            error_log("Error en PuestoComercial::getAllRecords: " . $e->getMessage());
+            return [];
+        }
+    }
+
+    public function getPaginatedRecords(int $filtroEstado = 1, int $limit, int $offset, ?string $search = null): array {
+        try {
+            $allRecords = $this->getAllRecords($filtroEstado);
+            
+            if ($search) {
+                $searchLower = strtolower($search);
+                $allRecords = array_filter($allRecords, function($record) use ($searchLower) {
+                    return str_contains(strtolower($record['interior']), $searchLower)
+                        || str_contains(strtolower($record['tipoPuesto']), $searchLower)
+                        || str_contains(strtolower($record['sucursal']), $searchLower)
+                        || str_contains(strtolower($record['observacion']), $searchLower);
+                });
+            }
+            
+            $totalRecords = count($allRecords);
+            return array_slice($allRecords, $offset, $limit);
         } catch (PDOException $e) {
             error_log("Error en PuestoComercial::getPaginatedRecords: " . $e->getMessage());
             return [];

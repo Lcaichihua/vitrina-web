@@ -221,7 +221,7 @@
                             <select name="tipoPuesto" id="tipoPuesto" required class="w-full px-4 py-2.5 border border-slate-200 rounded-xl text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500">
                                 <option value="">Seleccione tipo de puesto</option>
                                 <?php foreach ($tiposPuesto as $tipo): ?>
-                                    <option value="<?php echo $tipo['id_tipo_puesto_comercial']; ?>"><?php echo htmlspecialchars($tipo['descripcion']); ?></option>
+                                    <option value="<?php echo (string)$tipo['id_tipo_puesto_comercial']; ?>"><?php echo htmlspecialchars($tipo['descripcion']); ?></option>
                                 <?php endforeach; ?>
                             </select>
                         </div>
@@ -230,7 +230,7 @@
                             <select name="sucursal" id="sucursal" required class="w-full px-4 py-2.5 border border-slate-200 rounded-xl text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500">
                                 <option value="">Seleccione sucursal</option>
                                 <?php foreach ($sucursales as $suc): ?>
-                                    <option value="<?php echo $suc['id_sucursal']; ?>"><?php echo htmlspecialchars($suc['descripcion']); ?></option>
+                                    <option value="<?php echo (string)$suc['sucursalid']; ?>"><?php echo htmlspecialchars($suc['descripcion']); ?></option>
                                 <?php endforeach; ?>
                             </select>
                         </div>
@@ -304,8 +304,8 @@
     function openEditModal(id, tipoPuestoId, sucursalId, interior, observacion, estado) {
         document.getElementById('modalTitle').textContent = 'Editar Puesto Comercial';
         document.getElementById('puestoId').value = id;
-        document.getElementById('tipoPuesto').value = tipoPuestoId;
-        document.getElementById('sucursal').value = sucursalId;
+        document.getElementById('tipoPuesto').value = String(tipoPuestoId);
+        document.getElementById('sucursal').value = String(sucursalId);
         document.getElementById('interior').value = interior;
         document.getElementById('observacion').value = observacion;
         document.getElementById('estado').value = estado;

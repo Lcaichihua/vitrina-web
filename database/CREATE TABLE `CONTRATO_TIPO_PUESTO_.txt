@@ -1037,3 +1037,67 @@ BEGIN
 
   SET SESSION collation_connection = v_prev_coll;
 END
+
+
+CREATE DEFINER=`wptvxhei`@`localhost` PROCEDURE `USP_Listar_Arrendatarios_Busqueda`(IN `p_id_empresa` INT, IN `p_buscar` VARCHAR(200))
+BEGIN
+    -- (opcional pero recomendable) alinea la sesión
+    DECLARE v_prev_coll VARCHAR(64);
+    SELECT @@collation_connection INTO v_prev_coll;
+    SET SESSION collation_connection = 'utf8mb4_general_ci';
+
+    SELECT
+        a.id_arrendatario                                                AS Id,
+        CONCAT(b.abreviatura,' - ', a.numero_documento)                  AS doc,
+        IF(TRIM(a.nombres) = '',
+           a.nombre_concesionario_razon_social,
+           CONCAT(a.apellidos,' ', a.nombres) )                          AS nombres,
+        a.nombre_concesionario_razon_social                              AS concesionario,
+        0                                                                AS seleccion
+    FROM  CONTRATO_ARRENDATARIO a
+    INNER JOIN TIPODOCIDENTIDAD  b ON a.docident_id = b.docident_id
+    WHERE a.id_empresa = p_id_empresa and a.estado=1
+      AND (
+           p_buscar IS NULL OR TRIM(p_buscar) = '' OR
+           (
+             (IF(TRIM(a.nombres) = '',
+                 a.nombre_concesionario_razon_social,
+                 CONCAT(a.apellidos,' ', a.nombres)
+              ) COLLATE utf8mb4_general_ci)
+             LIKE CONCAT('%', p_buscar COLLATE utf8mb4_general_ci, '%')
+             -- SI NO QUIERES buscar por documento, elimina la siguiente línea:
+             OR a.numero_documento COLLATE utf8mb4_general_ci
+                LIKE CONCAT('%', p_buscar COLLATE utf8mb4_general_ci, '%')
+           )
+      )
+    ORDER BY nombres;
+
+    SET SESSION collation_connection = v_prev_coll;
+END
+
+CREATE DEFINER=`wptvxhei`@`localhost` PROCEDURE `USP_PuestoComercial_Listar`(
+  IN p_id_empresa INT,
+  IN p_estado     TINYINT   -- 1 = activos, 0 = inactivos, -1 = ambos
+)
+BEGIN
+  /* Devolvemos el mismo layout que tu SELECT original */
+  SELECT
+      a.id_puesto_comercial,
+      b.id_empresa,
+      b.id_tipo_puesto_comercial,
+      b.descripcion AS tipoPuesto,
+      a.sucursalid,
+      s.descripcion AS sucursal,
+      a.interior,
+      a.observacion,
+      a.estado
+  FROM CONTRATO_PUESTO_COMERCIAL a
+  INNER JOIN CONTRATO_TIPO_PUESTO_COMERCIAL b
+          ON a.id_tipo_puesto_comercial = b.id_tipo_puesto_comercial
+         AND b.id_empresa              = p_id_empresa
+  INNER JOIN sucursal s
+          ON a.sucursalid = s.sucursalid
+  WHERE a.id_empresa = p_id_empresa
+    AND (p_estado = -1 OR IFNULL(a.estado,1) = p_estado)
+  ORDER BY s.descripcion, b.descripcion, a.interior;
+END
