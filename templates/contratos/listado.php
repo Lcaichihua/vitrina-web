@@ -743,14 +743,14 @@ function renderArrendatariosTable(arrendatarios) {
     arrendatarios.forEach(a => {
         const isSelected = selectedArrendatarioId == a.id_arrendatario;
         const tr = document.createElement('tr');
-        tr.className = 'border-b border-slate-100 hover:bg-slate-50 cursor-pointer' + (isSelected ? ' bg-blue-50' : '');
+        tr.className = 'border-b border-slate-100 hover:bg-slate-50 cursor-pointer transition-colors' + (isSelected ? ' bg-blue-100 border-l-4 border-l-blue-600' : '');
         tr.dataset.id = a.id_arrendatario;
         tr.onclick = () => selectArrendatarioRow(a.id_arrendatario);
         tr.innerHTML = `
-            <td class="px-4 py-2 text-sm text-slate-700">${String(a.id_arrendatario).padStart(7, '0')}</td>
-            <td class="px-4 py-2 text-sm text-slate-700">${a.tipo_documento || ''} ${a.numero_documento || ''}</td>
-            <td class="px-4 py-2 text-sm text-slate-700">${a.nombres || ''}</td>
-            <td class="px-4 py-2 text-sm text-slate-700">${a.concessionesario || ''}</td>
+            <td class="px-4 py-2 text-sm font-medium ${isSelected ? 'text-blue-700' : 'text-slate-700'}">${String(a.id_arrendatario).padStart(7, '0')}</td>
+            <td class="px-4 py-2 text-sm ${isSelected ? 'text-blue-700' : 'text-slate-700'}">${a.tipo_documento || ''} ${a.numero_documento || ''}</td>
+            <td class="px-4 py-2 text-sm ${isSelected ? 'text-blue-700' : 'text-slate-700'}">${a.nombres || ''}</td>
+            <td class="px-4 py-2 text-sm ${isSelected ? 'text-blue-700' : 'text-slate-700'}">${a.concessionesario || ''}</td>
         `;
         tbody.appendChild(tr);
     });
@@ -760,9 +760,13 @@ function selectArrendatarioRow(id) {
     selectedArrendatarioId = id;
     document.querySelectorAll('#arrendatariosTableBody tr').forEach(row => {
         if (row.dataset.id == id) {
-            row.classList.add('bg-blue-50');
+            row.classList.add('bg-blue-100', 'border-l-4', 'border-l-blue-600');
+            row.querySelectorAll('td').forEach(td => td.classList.add('text-blue-700'));
+            row.querySelectorAll('td').forEach(td => td.classList.remove('text-slate-700'));
         } else {
-            row.classList.remove('bg-blue-50');
+            row.classList.remove('bg-blue-100', 'border-l-4', 'border-l-blue-600');
+            row.querySelectorAll('td').forEach(td => td.classList.remove('text-blue-700'));
+            row.querySelectorAll('td').forEach(td => td.classList.add('text-slate-700'));
         }
     });
 }
