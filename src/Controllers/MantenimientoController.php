@@ -148,7 +148,13 @@ class MantenimientoController {
         $numeroContrato = $_GET['numero_contrato'] ?? null;
         $arrendatario = $_GET['arrendatario'] ?? null;
         $pieIngreso = $_GET['pie_ingreso'] ?? null; // 'SI', 'NO', 'TODOS'
-        $idTipoContrato = isset($_GET['id_tipo_contrato']) && is_numeric($_GET['id_tipo_contrato']) ? (int)$_GET['id_tipo_contrato'] : null;
+        
+        $tiposSeleccionados = [];
+        if (isset($_GET['tipos_contrato']) && is_array($_GET['tipos_contrato'])) {
+            $tiposSeleccionados = array_map('intval', array_filter($_GET['tipos_contrato'], 'is_numeric'));
+        }
+        
+        $idTipoContrato = !empty($tiposSeleccionados) ? $tiposSeleccionados : null;
 
         if ($pieIngreso === 'TODOS') {
             $pieIngreso = null;

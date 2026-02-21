@@ -14,7 +14,7 @@ class Contrato {
     }
 
     public function getContratos(
-        ?int $idTipoContrato,
+        $idTipoContrato,
         ?string $pieIngreso,
         ?string $numeroContrato,
         ?string $arrendatario,
@@ -22,10 +22,55 @@ class Contrato {
         int $offset
     ): array {
         try {
+            // Manejar múltiples tipos de contrato
+            $tiposArray = null;
+            if (is_array($idTipoContrato) && count($idTipoContrato) > 0) {
+                $tiposArray = $idTipoContrato;
+                $idTipoContrato = null;
+            } elseif ($idTipoContrato !== null) {
+                $idTipoContrato = (int)$idTipoContrato;
+            }
+            
             $p_id_tipo_contrato = $idTipoContrato !== null ? (string)$idTipoContrato : 'NULL';
             $p_pie_ingreso = $pieIngreso !== null ? "'" . addslashes($pieIngreso) . "'" : 'NULL';
             $p_numero_contrato = $numeroContrato !== null ? "'" . addslashes($numeroContrato) . "'" : 'NULL';
             $p_arrendatario = $arrendatario !== null ? "'" . addslashes($arrendatario) . "'" : 'NULL';
+            
+            // Si hay múltiples tipos, hacer llamada por cada tipo y combinar resultados
+            if ($tiposArray !== null && count($tiposArray) > 0) {
+                $allData = [];
+                $total = 0;
+                
+                foreach ($tiposArray as $tipoId) {
+                    $p_id_tipo = (int)$tipoId;
+                    // Obtener todos los registros sin paginación para combinar
+                    $sql = "CALL wptvxhei_ventas.USP_Listar_Contratos_v2_Paginado2(
+                        " . (int)Globales::$o_id_empresa . ",
+                        $p_id_tipo,
+                        $p_pie_ingreso,
+                        $p_numero_contrato,
+                        $p_arrendatario,
+                        10000, 0
+                    )";
+                    
+                    $stmt = $this->pdo->query($sql);
+                    
+                    $totalResult = $stmt->fetch(PDO::FETCH_ASSOC);
+                    $total += $totalResult ? (int)$totalResult['total'] : 0;
+                    
+                    $stmt->nextRowset();
+                    $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                    $allData = array_merge($allData, $data);
+                }
+                
+                // Aplicar paginación en memoria
+                $paginatedData = array_slice($allData, $offset, $limit);
+                
+                return [
+                    'total' => $total,
+                    'data' => $paginatedData
+                ];
+            }
             
             $sql = "CALL wptvxhei_ventas.USP_Listar_Contratos_v2_Paginado2(
                 " . (int)Globales::$o_id_empresa . ",

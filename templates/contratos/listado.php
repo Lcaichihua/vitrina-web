@@ -83,15 +83,45 @@
                         </select>
                     </div>
                     <div>
-                        <label for="id_tipo_contrato" class="block text-xs font-medium text-slate-600 mb-1">Tipo Contrato</label>
-                        <select id="id_tipo_contrato" name="id_tipo_contrato" class="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500">
-                            <option value="">Todos los tipos</option>
-                            <?php foreach ($tiposContrato as $tipo): ?>
-                                <option value="<?php echo htmlspecialchars($tipo['id_tipo_contrato']); ?>" <?php echo ((isset($_GET['id_tipo_contrato']) && $_GET['id_tipo_contrato'] == $tipo['id_tipo_contrato'])) ? 'selected' : ''; ?>>
-                                    <?php echo htmlspecialchars($tipo['descripcion']); ?>
-                                </option>
-                            <?php endforeach; ?>
-                        </select>
+                        <label class="block text-xs font-medium text-slate-600 mb-1">Tipo Contrato</label>
+                        <div class="relative" x-data="{ open: false }">
+                            <button type="button" @click="open = !open" @click.outside="open = false" class="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 text-left flex items-center justify-between">
+                                <span id="tiposSelectedText">Seleccionar tipos...</span>
+                                <i class="fa-solid fa-chevron-down text-xs transition-transform" :class="open ? 'rotate-180' : ''"></i>
+                            </button>
+                            <div x-show="open" x-transition:enter="transition ease-out duration-150" x-transition:enter-start="opacity-0 -translate-y-1" x-transition:enter-end="opacity-100 translate-y-0" x-transition:leave="transition ease-in duration-100" x-transition:leave-start="opacity-100 translate-y-0" x-transition:leave-end="opacity-0 -translate-y-1" class="absolute z-50 w-full mt-1 bg-white border border-slate-200 rounded-lg shadow-lg max-h-60 overflow-y-auto" style="display: none;">
+                                <?php 
+                                $selectedTipos = isset($_GET['tipos_contrato']) && is_array($_GET['tipos_contrato']) 
+                                    ? $_GET['tipos_contrato'] 
+                                    : [];
+                                ?>
+                                <?php foreach ($tiposContrato as $tipo): ?>
+                                    <label class="flex items-center px-3 py-2 hover:bg-slate-50 cursor-pointer">
+                                        <input type="checkbox" 
+                                            name="tipos_contrato[]" 
+                                            value="<?php echo htmlspecialchars($tipo['id_tipo_contrato']); ?>"
+                                            <?php echo in_array((string)$tipo['id_tipo_contrato'], $selectedTipos) ? 'checked' : ''; ?>
+                                            @change="updateTiposText()"
+                                            class="w-4 h-4 text-blue-600 border-slate-300 rounded focus:ring-blue-500 mr-3">
+                                        <span class="text-sm text-slate-700"><?php echo htmlspecialchars($tipo['descripcion']); ?></span>
+                                    </label>
+                                <?php endforeach; ?>
+                            </div>
+                        </div>
+                        <script>
+                            function updateTiposText() {
+                                const checkboxes = document.querySelectorAll('input[name="tipos_contrato[]"]:checked');
+                                const text = document.getElementById('tiposSelectedText');
+                                if (checkboxes.length === 0) {
+                                    text.textContent = 'Seleccionar tipos...';
+                                } else if (checkboxes.length === 1) {
+                                    text.textContent = '1 tipo seleccionado';
+                                } else {
+                                    text.textContent = checkboxes.length + ' tipos seleccionados';
+                                }
+                            }
+                            document.addEventListener('DOMContentLoaded', updateTiposText);
+                        </script>
                     </div>
                 </div>
                 <div class="mt-4 flex justify-end gap-2">

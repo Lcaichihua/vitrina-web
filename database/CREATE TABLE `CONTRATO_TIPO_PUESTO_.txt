@@ -10,9 +10,9 @@ CREATE TABLE `CONTRATO_TIPO_PUESTO_COMERCIAL` (
   PRIMARY KEY (`id_tipo_puesto_comercial`)
 ) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
 
-INSERT INTO wptvxhei_ventas.CONTRATO_TIPO_PUESTO_COMERCIAL (id_empresa,descripcion,usuing,fechaing,usumod,fechamod,estado) VALUES
-	 (1,'STAND','ADMIN','2025-06-05 00:03:27',NULL,NULL,1),
-	 (1,'CANASTILLA','ADMIN','2025-06-05 00:03:53',NULL,NULL,1),
+	INSERT INTO wptvxhei_ventas.CONTRATO_TIPO_PUESTO_COMERCIAL (id_empresa,descripcion,usuing,fechaing,usumod,fechamod,estado) VALUES
+		 (1,'STAND','ADMIN','2025-06-05 00:03:27',NULL,NULL,1),
+		 (1,'CANASTILLA','ADMIN','2025-06-05 00:03:53',NULL,NULL,1),
 	 (1,'LOCAL','LUCIA','2025-07-25 17:32:02','LUCIA','2025-07-25 17:32:37',1),
 	 (1,'VENTANA','LUCIA','2025-09-24 12:40:53',NULL,NULL,1);
 
@@ -850,7 +850,7 @@ INSERT INTO wptvxhei_ventas.CONTRATO_PUESTO (id_contrato,id_puesto_comercial,alt
 	 (29,54,'2025-09-02',NULL,'CONTRATO',29,1);
 
 
-CREATE DEFINER=`wptvxhei`@`localhost` PROCEDURE `USP_Listar_Contratos_v2`(IN `p_id_empresa` INT, IN `p_id_tipo_contrato` INT, IN `p_pie_ingreso` VARCHAR(20), IN `p_numero_contrato` VARCHAR(50), IN `p_arrendatario` VARCHAR(200))
+CREATE PROCEDURE `USP_Listar_Contratos_v2`(IN `p_id_empresa` INT, IN `p_id_tipo_contrato` INT, IN `p_pie_ingreso` VARCHAR(20), IN `p_numero_contrato` VARCHAR(50), IN `p_arrendatario` VARCHAR(200))
 BEGIN
     DECLARE v_prev_coll VARCHAR(64);
     SELECT @@collation_connection INTO v_prev_coll;
@@ -980,4 +980,60 @@ BEGIN
     ORDER BY ct.id_contrato DESC;
 
     SET SESSION collation_connection = v_prev_coll;
+END
+
+CREATE DEFINER=`wptvxhei`@`localhost` PROCEDURE `USP_PuestoComercial_ListarParaEdicion_Hoy`(
+  IN p_id_empresa               INT,
+  IN p_sucursalid               INT,      -- NULL => todas
+  IN p_id_tipo_puesto_comercial INT,      -- NULL => todos
+  IN p_id_contrato_edicion      INT       -- contrato que estás editando
+)
+BEGIN
+  DECLARE v_prev_coll VARCHAR(64);
+  DECLARE v_hoy DATE;
+  SELECT @@collation_connection INTO v_prev_coll;
+  SET SESSION collation_connection = 'utf8mb4_general_ci';
+  SET v_hoy = CURDATE();
+
+  SELECT
+    a.id_puesto_comercial                 AS Id,
+    b.id_tipo_puesto_comercial            AS IdTipoPuestoComercial,
+    b.descripcion                         AS TipoPuesto,
+    a.sucursalid,
+    s.descripcion                         AS Sucursal,
+    a.interior                            AS Interior_Numero,
+    CASE
+      -- Marcado solo si HOY pertenece al contrato en edición (vigente)
+      WHEN EXISTS (
+        SELECT 1
+          FROM CONTRATO_PUESTO cps
+         WHERE cps.id_puesto_comercial = a.id_puesto_comercial
+           AND cps.id_contrato         = p_id_contrato_edicion
+           AND cps.alta <= v_hoy
+           AND (cps.baja IS NULL OR v_hoy < cps.baja)
+      ) THEN 1 ELSE 0
+    END AS seleccion
+  FROM CONTRATO_PUESTO_COMERCIAL a
+  JOIN CONTRATO_TIPO_PUESTO_COMERCIAL b
+    ON b.id_tipo_puesto_comercial = a.id_tipo_puesto_comercial
+   AND b.id_empresa               = p_id_empresa
+  JOIN sucursal s
+    ON s.sucursalid = a.sucursalid
+
+  -- Si el puesto está ocupado HOY por otro contrato, lo excluimos
+  LEFT JOIN CONTRATO_PUESTO cp_otros
+    ON cp_otros.id_puesto_comercial = a.id_puesto_comercial
+   AND cp_otros.alta <= v_hoy
+   AND (cp_otros.baja IS NULL OR v_hoy < cp_otros.baja)
+   AND cp_otros.id_contrato <> p_id_contrato_edicion
+
+  WHERE a.id_empresa = p_id_empresa
+    AND (p_sucursalid IS NULL OR a.sucursalid = p_sucursalid)
+    AND (p_id_tipo_puesto_comercial IS NULL OR a.id_tipo_puesto_comercial = p_id_tipo_puesto_comercial)
+    AND (a.estado IS NULL OR a.estado = 1)    -- opcional: solo activos
+    AND cp_otros.id_contrato IS NULL          -- libres de OTROS
+
+  ORDER BY s.descripcion, a.interior;
+
+  SET SESSION collation_connection = v_prev_coll;
 END
