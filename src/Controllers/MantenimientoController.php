@@ -163,6 +163,9 @@ class MantenimientoController {
         try {
             $model = new Contrato();
             $tiposContrato = $model->getTiposContrato();
+            $sucursales = $model->getSucursales();
+            $tiposPuestoComercial = $model->getTiposPuestoComercial();
+            $tiposDocumento = $model->getTiposDocumento();
 
             // Una sola llamada al SP
             $result = $model->getContratos($idTipoContrato, $pieIngreso, $numeroContrato, $arrendatario, $records_per_page, $offset);
@@ -433,6 +436,69 @@ class MantenimientoController {
         }
 
         header('Location: /mantenimiento/arrendatarios');
+        exit;
+    }
+
+    // ============ API CONTRATOS ============
+    public function apiGetPuestos() {
+        header('Content-Type: application/json');
+        
+        try {
+            $sucursalId = isset($_GET['sucursal']) && is_numeric($_GET['sucursal']) ? (int)$_GET['sucursal'] : null;
+            $tipoPuestoId = isset($_GET['tipo_puesto']) && is_numeric($_GET['tipo_puesto']) ? (int)$_GET['tipo_puesto'] : null;
+            $contratoId = isset($_GET['contrato']) && is_numeric($_GET['contrato']) ? (int)$_GET['contrato'] : null;
+
+            $model = new Contrato();
+            $puestos = $model->getPuestosComercialesParaEdicion($sucursalId, $tipoPuestoId, $contratoId);
+
+            echo json_encode(['success' => true, 'data' => $puestos]);
+        } catch (Exception $e) {
+            error_log("Error en apiGetPuestos: " . $e->getMessage());
+            echo json_encode(['success' => false, 'error' => $e->getMessage()]);
+        }
+        exit;
+    }
+
+    public function apiBuscarArrendatarios() {
+        header('Content-Type: application/json');
+        
+        try {
+            $busqueda = isset($_GET['q']) ? trim($_GET['q']) : null;
+
+            $model = new Contrato();
+            $arrendatarios = $model->buscarArrendatarios($busqueda);
+
+            echo json_encode(['success' => true, 'data' => $arrendatarios]);
+        } catch (Exception $e) {
+            error_log("Error en apiBuscarArrendatarios: " . $e->getMessage());
+            echo json_encode(['success' => false, 'error' => $e->getMessage()]);
+        }
+        exit;
+    }
+
+    public function apiGetArrendatario() {
+        header('Content-Type: application/json');
+        
+        try {
+            $id = isset($_GET['id']) && is_numeric($_GET['id']) ? (int)$_GET['id'] : null;
+
+            if (!$id) {
+                echo json_encode(['success' => false, 'error' => 'ID requerido']);
+                exit;
+            }
+
+            $model = new Contrato();
+            $arrendatario = $model->getArrendatarioById($id);
+
+            if ($arrendatario) {
+                echo json_encode(['success' => true, 'data' => $arrendatario]);
+            } else {
+                echo json_encode(['success' => false, 'error' => 'Arrendatario no encontrado']);
+            }
+        } catch (Exception $e) {
+            error_log("Error en apiGetArrendatario: " . $e->getMessage());
+            echo json_encode(['success' => false, 'error' => $e->getMessage()]);
+        }
         exit;
     }
 }

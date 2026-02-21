@@ -19,3 +19,6 @@
 /fuel/app/logs/*/*/*
 /fuel/app/cache/*/*
 /fuel/app/config/crypt.php
+
+# Sistema de Ventas (desktop reference)
+/"Sistema de Ventas la Vitrina/"

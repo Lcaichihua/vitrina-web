@@ -160,6 +160,37 @@ switch ($uri) {
         $controller->arrendatarioEliminar();
         break;
 
+    // ============ API CONTRATOS ============
+    case '/api/contratos/puestos':
+        if (!isset($_SESSION['user_id'])) {
+            header('Content-Type: application/json');
+            echo json_encode(['error' => 'Unauthorized']);
+            exit;
+        }
+        $controller = new MantenimientoController();
+        $controller->apiGetPuestos();
+        break;
+
+    case '/api/contratos/arrendatarios':
+        if (!isset($_SESSION['user_id'])) {
+            header('Content-Type: application/json');
+            echo json_encode(['error' => 'Unauthorized']);
+            exit;
+        }
+        $controller = new MantenimientoController();
+        $controller->apiBuscarArrendatarios();
+        break;
+
+    case '/api/contratos/arrendatario':
+        if (!isset($_SESSION['user_id'])) {
+            header('Content-Type: application/json');
+            echo json_encode(['error' => 'Unauthorized']);
+            exit;
+        }
+        $controller = new MantenimientoController();
+        $controller->apiGetArrendatario();
+        break;
+
     default:
         http_response_code(404);
         echo "<h1>404 - Página no encontrada</h1>";
