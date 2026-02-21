@@ -191,6 +191,16 @@ switch ($uri) {
         $controller->apiGetArrendatario();
         break;
 
+    case '/api/arrendatario/ubigeo':
+        if (!isset($_SESSION['user_id'])) {
+            header('Content-Type: application/json');
+            echo json_encode(['error' => 'Unauthorized']);
+            exit;
+        }
+        $controller = new MantenimientoController();
+        $controller->apiGetUbigeo();
+        break;
+
     default:
         http_response_code(404);
         echo "<h1>404 - Página no encontrada</h1>";

@@ -14,38 +14,35 @@ class Arrendatario {
         $this->pdo = Database::connect();
     }
 
+    public function getAllRecords(int $filtroEstado = -1): array {
+        try {
+            $stmt = $this->pdo->prepare("CALL USP_Listar_Contrato_Arrendatarios(?, ?)");
+            $stmt->bindParam(1, Globales::$o_id_empresa, PDO::PARAM_INT);
+            $stmt->bindParam(2, $filtroEstado, PDO::PARAM_INT);
+            $stmt->execute();
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            error_log("Error en Arrendatario::getAllRecords: " . $e->getMessage());
+            return [];
+        }
+    }
+
     public function getTotalRecords(int $filtroEstado = 1, ?string $search = null): int {
         try {
-            $whereClause = "WHERE a.id_empresa = :id_empresa AND (:filtro_estado_check = -1 OR IFNULL(a.estado,1) = :filtro_estado_value)";
+            $allRecords = $this->getAllRecords($filtroEstado);
             
             if ($search) {
-                $whereClause .= " AND (
-                    a.numero_documento LIKE :search1 
-                    OR a.nombres LIKE :search2 
-                    OR a.apellidos LIKE :search3 
-                    OR a.direccion LIKE :search4
-                )";
-            }
-
-            $sql = "SELECT COUNT(a.id_arrendatario)
-                    FROM CONTRATO_ARRENDATARIO a
-                    INNER JOIN TIPODOCIDENTIDAD b ON a.docident_id = b.docident_id
-                    $whereClause";
-            $stmt = $this->pdo->prepare($sql);
-            $stmt->bindParam(':id_empresa', Globales::$o_id_empresa, PDO::PARAM_INT);
-            $stmt->bindParam(':filtro_estado_check', $filtroEstado, PDO::PARAM_INT);
-            $stmt->bindParam(':filtro_estado_value', $filtroEstado, PDO::PARAM_INT);
-            
-            if ($search) {
-                $searchParam = "%$search%";
-                $stmt->bindParam(':search1', $searchParam, PDO::PARAM_STR);
-                $stmt->bindParam(':search2', $searchParam, PDO::PARAM_STR);
-                $stmt->bindParam(':search3', $searchParam, PDO::PARAM_STR);
-                $stmt->bindParam(':search4', $searchParam, PDO::PARAM_STR);
+                $searchLower = strtolower($search);
+                $allRecords = array_filter($allRecords, function($record) use ($searchLower) {
+                    return str_contains(strtolower($record['numero_documento'] ?? ''), $searchLower)
+                        || str_contains(strtolower($record['nombre_concesionario_razon_social'] ?? ''), $searchLower)
+                        || str_contains(strtolower($record['apellidos'] ?? ''), $searchLower)
+                        || str_contains(strtolower($record['nombres'] ?? ''), $searchLower)
+                        || str_contains(strtolower($record['direccion'] ?? ''), $searchLower);
+                });
             }
             
-            $stmt->execute();
-            return (int) $stmt->fetchColumn();
+            return count($allRecords);
         } catch (PDOException $e) {
             error_log("Error en Arrendatario::getTotalRecords: " . $e->getMessage());
             return 0;
@@ -54,71 +51,83 @@ class Arrendatario {
 
     public function getPaginatedRecords(int $filtroEstado = 1, int $limit, int $offset, ?string $search = null): array {
         try {
-            $whereClause = "WHERE a.id_empresa = :id_empresa AND (:filtro_estado_check = -1 OR IFNULL(a.estado,1) = :filtro_estado_value)";
+            $allRecords = $this->getAllRecords($filtroEstado);
             
             if ($search) {
-                $whereClause .= " AND (
-                    a.numero_documento LIKE :search1 
-                    OR a.nombres LIKE :search2 
-                    OR a.apellidos LIKE :search3 
-                    OR a.direccion LIKE :search4
-                )";
-            }
-
-            $sql = "SELECT
-                        a.id_arrendatario,
-                        b.abreviatura AS tipo_documento,
-                        a.numero_documento,
-                        a.nombres,
-                        a.apellidos,
-                        a.direccion,
-                        DATE_FORMAT(a.fechaing, '%d/%m/%Y') AS desde,
-                        DATE_FORMAT(a.fechamod, '%d/%m/%Y') AS hasta,
-                        a.estado
-                    FROM CONTRATO_ARRENDATARIO a
-                    INNER JOIN TIPODOCIDENTIDAD b ON a.docident_id = b.docident_id
-                    $whereClause
-                    ORDER BY a.apellidos, a.nombres
-                    LIMIT :limit_param OFFSET :offset_param;";
-
-            $stmt = $this->pdo->prepare($sql);
-            $stmt->bindParam(':id_empresa', Globales::$o_id_empresa, PDO::PARAM_INT);
-            $stmt->bindParam(':filtro_estado_check', $filtroEstado, PDO::PARAM_INT);
-            $stmt->bindParam(':filtro_estado_value', $filtroEstado, PDO::PARAM_INT);
-            $stmt->bindParam(':limit_param', $limit, PDO::PARAM_INT);
-            $stmt->bindParam(':offset_param', $offset, PDO::PARAM_INT);
-            
-            if ($search) {
-                $searchParam = "%$search%";
-                $stmt->bindParam(':search1', $searchParam, PDO::PARAM_STR);
-                $stmt->bindParam(':search2', $searchParam, PDO::PARAM_STR);
-                $stmt->bindParam(':search3', $searchParam, PDO::PARAM_STR);
-                $stmt->bindParam(':search4', $searchParam, PDO::PARAM_STR);
+                $searchLower = strtolower($search);
+                $allRecords = array_filter($allRecords, function($record) use ($searchLower) {
+                    return str_contains(strtolower($record['numero_documento'] ?? ''), $searchLower)
+                        || str_contains(strtolower($record['nombre_concesionario_razon_social'] ?? ''), $searchLower)
+                        || str_contains(strtolower($record['apellidos'] ?? ''), $searchLower)
+                        || str_contains(strtolower($record['nombres'] ?? ''), $searchLower)
+                        || str_contains(strtolower($record['direccion'] ?? ''), $searchLower);
+                });
             }
             
-            $stmt->execute();
-            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+            return array_slice($allRecords, $offset, $limit);
         } catch (PDOException $e) {
             error_log("Error en Arrendatario::getPaginatedRecords: " . $e->getMessage());
             return [];
         }
     }
 
-    public function create(string $tipoDoc, string $numeroDoc, string $apellidos, string $nombres, string $direccion = '', int $estado = 1): int {
+    public function getTiposDocumento(): array {
         try {
-            $sqlDocId = "SELECT docident_id FROM TIPODOCIDENTIDAD WHERE abreviatura = :abrev LIMIT 1";
-            $stmtDocId = $this->pdo->prepare($sqlDocId);
-            $stmtDocId->bindParam(':abrev', $tipoDoc, PDO::PARAM_STR);
-            $stmtDocId->execute();
-            $docId = $stmtDocId->fetchColumn();
+            $stmt = $this->pdo->query("SELECT docident_id, abreviatura FROM TIPODOCIDENTIDAD ORDER BY docident_id ASC");
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            error_log("Error en Arrendatario::getTiposDocumento: " . $e->getMessage());
+            return [];
+        }
+    }
 
-            $sql = "INSERT INTO CONTRATO_ARRENDATARIO (docident_id, numero_documento, nombres, apellidos, direccion, estado, id_empresa, fechaing) 
-                    VALUES (:doc_id, :numero, :nombres, :apellidos, :direccion, :estado, :id_empresa, NOW())";
+    public function getDepartamentos(): array {
+        try {
+            $stmt = $this->pdo->query("SELECT depaid, departamento FROM ubdepartamento ORDER BY depaid ASC");
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            error_log("Error en Arrendatario::getDepartamentos: " . $e->getMessage());
+            return [];
+        }
+    }
+
+    public function getProvincias(int $depaid): array {
+        try {
+            $stmt = $this->pdo->prepare("SELECT provid, provincia FROM ubprovincia WHERE depaid = :depaid ORDER BY provid ASC");
+            $stmt->bindParam(':depaid', $depaid, PDO::PARAM_INT);
+            $stmt->execute();
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            error_log("Error en Arrendatario::getProvincias: " . $e->getMessage());
+            return [];
+        }
+    }
+
+    public function getDistritos(int $provid): array {
+        try {
+            $stmt = $this->pdo->prepare("SELECT distid, distrito FROM ubdistrito WHERE provid = :provid ORDER BY distid ASC");
+            $stmt->bindParam(':provid', $provid, PDO::PARAM_INT);
+            $stmt->execute();
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            error_log("Error en Arrendatario::getDistritos: " . $e->getMessage());
+            return [];
+        }
+    }
+
+    public function create(int $tipoDocId, string $numeroDoc, string $apellidos, string $nombres, string $razonSocial, int $depaid, int $provid, int $distid, string $direccion = '', int $estado = 1): int {
+        try {
+            $sql = "INSERT INTO CONTRATO_ARRENDATARIO (docident_id, numero_documento, nombres, apellidos, nombre_concesionario_razon_social, depaid, provid, distid, direccion, estado, id_empresa, fechaing) 
+                    VALUES (:doc_id, :numero, :nombres, :apellidos, :razon_social, :depaid, :provid, :distid, :direccion, :estado, :id_empresa, NOW())";
             $stmt = $this->pdo->prepare($sql);
-            $stmt->bindParam(':doc_id', $docId, PDO::PARAM_INT);
+            $stmt->bindParam(':doc_id', $tipoDocId, PDO::PARAM_INT);
             $stmt->bindParam(':numero', $numeroDoc, PDO::PARAM_STR);
             $stmt->bindParam(':nombres', $nombres, PDO::PARAM_STR);
             $stmt->bindParam(':apellidos', $apellidos, PDO::PARAM_STR);
+            $stmt->bindParam(':razon_social', $razonSocial, PDO::PARAM_STR);
+            $stmt->bindParam(':depaid', $depaid, PDO::PARAM_INT);
+            $stmt->bindParam(':provid', $provid, PDO::PARAM_INT);
+            $stmt->bindParam(':distid', $distid, PDO::PARAM_INT);
             $stmt->bindParam(':direccion', $direccion, PDO::PARAM_STR);
             $stmt->bindParam(':estado', $estado, PDO::PARAM_INT);
             $stmt->bindParam(':id_empresa', Globales::$o_id_empresa, PDO::PARAM_INT);
@@ -130,22 +139,22 @@ class Arrendatario {
         }
     }
 
-    public function update(int $id, string $tipoDoc, string $numeroDoc, string $apellidos, string $nombres, string $direccion = '', int $estado = 1): bool {
+    public function update(int $id, int $tipoDocId, string $numeroDoc, string $apellidos, string $nombres, string $razonSocial, int $depaid, int $provid, int $distid, string $direccion = '', int $estado = 1): bool {
         try {
-            $sqlDocId = "SELECT docident_id FROM TIPODOCIDENTIDAD WHERE abreviatura = :abrev LIMIT 1";
-            $stmtDocId = $this->pdo->prepare($sqlDocId);
-            $stmtDocId->bindParam(':abrev', $tipoDoc, PDO::PARAM_STR);
-            $stmtDocId->execute();
-            $docId = $stmtDocId->fetchColumn();
-
             $sql = "UPDATE CONTRATO_ARRENDATARIO SET docident_id = :doc_id, numero_documento = :numero, 
-                    nombres = :nombres, apellidos = :apellidos, direccion = :direccion, estado = :estado, fechamod = NOW()
+                    nombres = :nombres, apellidos = :apellidos, nombre_concesionario_razon_social = :razon_social,
+                    depaid = :depaid, provid = :provid, distid = :distid,
+                    direccion = :direccion, estado = :estado, fechamod = NOW()
                     WHERE id_arrendatario = :id AND id_empresa = :id_empresa";
             $stmt = $this->pdo->prepare($sql);
-            $stmt->bindParam(':doc_id', $docId, PDO::PARAM_INT);
+            $stmt->bindParam(':doc_id', $tipoDocId, PDO::PARAM_INT);
             $stmt->bindParam(':numero', $numeroDoc, PDO::PARAM_STR);
             $stmt->bindParam(':nombres', $nombres, PDO::PARAM_STR);
             $stmt->bindParam(':apellidos', $apellidos, PDO::PARAM_STR);
+            $stmt->bindParam(':razon_social', $razonSocial, PDO::PARAM_STR);
+            $stmt->bindParam(':depaid', $depaid, PDO::PARAM_INT);
+            $stmt->bindParam(':provid', $provid, PDO::PARAM_INT);
+            $stmt->bindParam(':distid', $distid, PDO::PARAM_INT);
             $stmt->bindParam(':direccion', $direccion, PDO::PARAM_STR);
             $stmt->bindParam(':estado', $estado, PDO::PARAM_INT);
             $stmt->bindParam(':id', $id, PDO::PARAM_INT);

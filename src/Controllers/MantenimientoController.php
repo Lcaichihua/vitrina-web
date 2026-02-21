@@ -121,6 +121,8 @@ class MantenimientoController {
             $total_records = $model->getTotalRecords($filtroEstado, $search);
             $total_pages = ceil($total_records / $records_per_page);
             $arrendatarios = $model->getPaginatedRecords($filtroEstado, $records_per_page, $offset, $search);
+            $tiposDocumento = $model->getTiposDocumento();
+            $departamentos = $model->getDepartamentos();
         } catch (Exception $e) {
             error_log("Error al obtener arrendatarios: " . $e->getMessage());
             $error = "No se pudieron cargar los arrendatarios: " . $e->getMessage();
@@ -382,27 +384,31 @@ class MantenimientoController {
             exit;
         }
 
-        $id = isset($_POST['id']) ? (int)$_POST['id'] : null;
-        $tipoDoc = trim($_POST['tipoDoc'] ?? 'DNI');
+        $id = isset($_POST['id']) ? (int)$_POST['id'] : 0;
+        $tipoDocId = isset($_POST['tipoDoc']) ? (int)$_POST['tipoDoc'] : 0;
         $numeroDoc = trim($_POST['numeroDoc'] ?? '');
         $apellidos = trim($_POST['apellidos'] ?? '');
         $nombres = trim($_POST['nombres'] ?? '');
+        $razonSocial = trim($_POST['razonSocial'] ?? '');
+        $depaid = isset($_POST['departamento']) ? (int)$_POST['departamento'] : 0;
+        $provid = isset($_POST['provincia']) ? (int)$_POST['provincia'] : 0;
+        $distid = isset($_POST['distrito']) ? (int)$_POST['distrito'] : 0;
         $direccion = trim($_POST['direccion'] ?? '');
         $estado = isset($_POST['estado']) ? (int)$_POST['estado'] : 1;
 
-        if (empty($numeroDoc) || empty($apellidos) || empty($nombres)) {
-            $_SESSION['error'] = 'Los campos documento, apellidos y nombres son requeridos';
+        if ($tipoDocId <= 0 || empty($numeroDoc)) {
+            $_SESSION['error'] = 'Seleccione tipo de documento e ingrese el número';
             header('Location: /mantenimiento/arrendatarios');
             exit;
         }
 
         try {
             $model = new Arrendatario();
-            if ($id) {
-                $model->update($id, $tipoDoc, $numeroDoc, $apellidos, $nombres, $direccion, $estado);
+            if ($id > 0) {
+                $model->update($id, $tipoDocId, $numeroDoc, $apellidos, $nombres, $razonSocial, $depaid, $provid, $distid, $direccion, $estado);
                 $_SESSION['success'] = 'Arrendatario actualizado correctamente';
             } else {
-                $model->create($tipoDoc, $numeroDoc, $apellidos, $nombres, $direccion, $estado);
+                $model->create($tipoDocId, $numeroDoc, $apellidos, $nombres, $razonSocial, $depaid, $provid, $distid, $direccion, $estado);
                 $_SESSION['success'] = 'Arrendatario creado correctamente';
             }
         } catch (Exception $e) {
@@ -500,6 +506,39 @@ class MantenimientoController {
         } catch (Exception $e) {
             error_log("Error en apiGetArrendatario: " . $e->getMessage());
             echo json_encode(['success' => false, 'error' => $e->getMessage()]);
+        }
+        exit;
+    }
+
+    public function apiGetUbigeo() {
+        header('Content-Type: application/json');
+        
+        try {
+            $action = $_POST['action'] ?? '';
+            $model = new Arrendatario();
+            
+            if ($action === 'getProvincias') {
+                $depaid = isset($_POST['depaid']) ? (int)$_POST['depaid'] : 0;
+                if ($depaid <= 0) {
+                    echo json_encode([]);
+                    exit;
+                }
+                $provincias = $model->getProvincias($depaid);
+                echo json_encode($provincias);
+            } elseif ($action === 'getDistritos') {
+                $provid = isset($_POST['provid']) ? (int)$_POST['provid'] : 0;
+                if ($provid <= 0) {
+                    echo json_encode([]);
+                    exit;
+                }
+                $distritos = $model->getDistritos($provid);
+                echo json_encode($distritos);
+            } else {
+                echo json_encode([]);
+            }
+        } catch (Exception $e) {
+            error_log("Error en apiGetUbigeo: " . $e->getMessage());
+            echo json_encode(['error' => $e->getMessage()]);
         }
         exit;
     }

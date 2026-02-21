@@ -1101,3 +1101,30 @@ BEGIN
     AND (p_estado = -1 OR IFNULL(a.estado,1) = p_estado)
   ORDER BY s.descripcion, b.descripcion, a.interior;
 END
+
+
+CREATE DEFINER=`wptvxhei`@`localhost` PROCEDURE `USP_Listar_Contrato_Arrendatarios`(
+    IN p_id_empresa INT,
+    IN p_estado INT
+)
+BEGIN
+    SELECT
+        a.id_arrendatario,
+        b.docident_id,
+        b.abreviatura AS abrev_doc,
+        a.numero_documento,
+        a.abreviatura,
+        a.nombre_concesionario_razon_social,
+        a.apellidos,
+        a.nombres,
+        a.direccion,
+        a.depaid,
+        a.provid,
+        a.distid,
+        a.nombre_concesionario_razon_social AS concesionario,
+        a.estado
+    FROM CONTRATO_ARRENDATARIO a
+    INNER JOIN TIPODOCIDENTIDAD b ON a.docident_id = b.docident_id
+    WHERE a.id_empresa = p_id_empresa
+      AND (p_estado = -1 OR a.estado = p_estado);
+END

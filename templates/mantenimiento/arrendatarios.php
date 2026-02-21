@@ -130,7 +130,10 @@
                                     Tipo Doc.
                                 </th>
                                 <th class="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider">
-                                    Nº Documento
+                                    N° Documento
+                                </th>
+                                <th class="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider">
+                                    R.Social
                                 </th>
                                 <th class="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider">
                                     Apellidos
@@ -140,12 +143,6 @@
                                 </th>
                                 <th class="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider">
                                     Dirección
-                                </th>
-                                <th class="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider">
-                                    Desde
-                                </th>
-                                <th class="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider">
-                                    Hasta
                                 </th>
                                 <th class="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider">
                                     Estado
@@ -160,26 +157,23 @@
                                 <tr class="<?php echo $index % 2 === 0 ? 'bg-white' : 'bg-slate-50/50'; ?> hover:bg-blue-50/50 transition-colors duration-150">
                                     <td class="px-6 py-4 whitespace-nowrap">
                                         <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-slate-100 text-slate-700">
-                                            <?php echo htmlspecialchars($arrendatario['tipo_documento']); ?>
+                                            <?php echo htmlspecialchars($arrendatario['abrev_doc']); ?>
                                         </span>
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm font-semibold text-slate-700">
                                         <?php echo htmlspecialchars($arrendatario['numero_documento']); ?>
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-600">
-                                        <?php echo htmlspecialchars($arrendatario['apellidos']); ?>
+                                        <?php echo htmlspecialchars($arrendatario['nombre_concesionario_razon_social'] ?? ''); ?>
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-600">
-                                        <?php echo htmlspecialchars($arrendatario['nombres']); ?>
+                                        <?php echo htmlspecialchars($arrendatario['apellidos'] ?? ''); ?>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-600">
+                                        <?php echo htmlspecialchars($arrendatario['nombres'] ?? ''); ?>
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-500">
-                                        <?php echo htmlspecialchars($arrendatario['direccion']); ?>
-                                    </td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-500">
-                                        <?php echo htmlspecialchars($arrendatario['desde']); ?>
-                                    </td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-500">
-                                        <?php echo htmlspecialchars($arrendatario['hasta']); ?>
+                                        <?php echo htmlspecialchars($arrendatario['direccion'] ?? ''); ?>
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap">
                                         <?php if ($arrendatario['estado'] == 1): ?>
@@ -196,10 +190,10 @@
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap">
                                         <div class="flex items-center justify-center gap-2">
-                                            <button class="p-2 text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors" title="Editar" onclick="openEditModal(<?php echo $arrendatario['id_arrendatario']; ?>, '<?php echo htmlspecialchars($arrendatario['tipo_documento']); ?>', '<?php echo htmlspecialchars($arrendatario['numero_documento']); ?>', '<?php echo htmlspecialchars($arrendatario['apellidos']); ?>', '<?php echo htmlspecialchars($arrendatario['nombres']); ?>', '<?php echo htmlspecialchars($arrendatario['direccion']); ?>', <?php echo $arrendatario['estado']; ?>)">
+                                            <button class="p-2 text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors" title="Editar" onclick="openEditModal(<?php echo $arrendatario['id_arrendatario']; ?>, <?php echo $arrendatario['docident_id']; ?>, '<?php echo htmlspecialchars($arrendatario['numero_documento']); ?>', '<?php echo htmlspecialchars($arrendatario['abrev_doc']); ?>', '<?php echo htmlspecialchars($arrendatario['apellidos'] ?? ''); ?>', '<?php echo htmlspecialchars($arrendatario['nombres'] ?? ''); ?>', '<?php echo htmlspecialchars($arrendatario['nombre_concesionario_razon_social'] ?? ''); ?>', '<?php echo htmlspecialchars($arrendatario['direccion'] ?? ''); ?>', <?php echo $arrendatario['depaid']; ?>, <?php echo $arrendatario['provid']; ?>, <?php echo $arrendatario['distid']; ?>, <?php echo $arrendatario['estado']; ?>)">
                                                 <i class="fa-solid fa-pen-to-square"></i>
                                             </button>
-                                            <button class="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors" title="Eliminar" onclick="confirmDelete(<?php echo $arrendatario['id_arrendatario']; ?>, '<?php echo htmlspecialchars($arrendatario['apellidos'] . ' ' . $arrendatario['nombres']); ?>')">
+                                            <button class="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors" title="Eliminar" onclick="confirmDelete(<?php echo $arrendatario['id_arrendatario']; ?>, '<?php echo htmlspecialchars(($arrendatario['nombre_concesionario_razon_social'] ?? '') ?: ($arrendatario['apellidos'] ?? '') . ' ' . ($arrendatario['nombres'] ?? '')); ?>')">
                                                 <i class="fa-solid fa-trash"></i>
                                             </button>
                                         </div>
@@ -251,7 +245,7 @@
         <div class="bg-white rounded-2xl shadow-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto">
             <div class="p-6">
                 <div class="flex items-center justify-between mb-6">
-                    <h3 class="text-xl font-bold text-slate-800" id="modalTitle">Nuevo Arrendatario</h3>
+                    <h3 class="text-xl font-bold text-slate-800" id="modalTitle">Registro de Arrendatario</h3>
                     <button onclick="closeModal()" class="p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-lg transition-colors">
                         <i class="fa-solid fa-xmark"></i>
                     </button>
@@ -263,24 +257,52 @@
                             <div>
                                 <label for="tipoDoc" class="block text-sm font-medium text-slate-700 mb-1">Tipo Documento</label>
                                 <select name="tipoDoc" id="tipoDoc" required class="w-full px-4 py-2.5 border border-slate-200 rounded-xl text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500">
-                                    <option value="DNI">DNI</option>
-                                    <option value="RUC">RUC</option>
-                                    <option value="CE">Carnet Extranjería</option>
+                                    <option value="">Seleccione</option>
+                                    <?php foreach ($tiposDocumento as $tipo): ?>
+                                        <option value="<?php echo (string)$tipo['docident_id']; ?>"><?php echo htmlspecialchars($tipo['abreviatura']); ?></option>
+                                    <?php endforeach; ?>
                                 </select>
                             </div>
                             <div>
-                                <label for="numeroDoc" class="block text-sm font-medium text-slate-700 mb-1">Nº Documento</label>
-                                <input type="text" name="numeroDoc" id="numeroDoc" required class="w-full px-4 py-2.5 border border-slate-200 rounded-xl text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500" placeholder="Nº documento">
+                                <label for="numeroDoc" class="block text-sm font-medium text-slate-700 mb-1">N° Documento</label>
+                                <input type="text" name="numeroDoc" id="numeroDoc" required class="w-full px-4 py-2.5 border border-slate-200 rounded-xl text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500" placeholder="N° documento">
                             </div>
+                        </div>
+                        <div>
+                            <label for="razonSocial" class="block text-sm font-medium text-slate-700 mb-1">Concesionario o Razón Social</label>
+                            <input type="text" name="razonSocial" id="razonSocial" class="w-full px-4 py-2.5 border border-slate-200 rounded-xl text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500" placeholder="Razón social o nombre de concesión">
                         </div>
                         <div class="grid grid-cols-2 gap-4">
                             <div>
                                 <label for="apellidos" class="block text-sm font-medium text-slate-700 mb-1">Apellidos</label>
-                                <input type="text" name="apellidos" id="apellidos" required class="w-full px-4 py-2.5 border border-slate-200 rounded-xl text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500" placeholder="Apellidos">
+                                <input type="text" name="apellidos" id="apellidos" class="w-full px-4 py-2.5 border border-slate-200 rounded-xl text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500" placeholder="Apellidos">
                             </div>
                             <div>
                                 <label for="nombres" class="block text-sm font-medium text-slate-700 mb-1">Nombres</label>
-                                <input type="text" name="nombres" id="nombres" required class="w-full px-4 py-2.5 border border-slate-200 rounded-xl text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500" placeholder="Nombres">
+                                <input type="text" name="nombres" id="nombres" class="w-full px-4 py-2.5 border border-slate-200 rounded-xl text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500" placeholder="Nombres">
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-3 gap-4">
+                            <div>
+                                <label for="departamento" class="block text-sm font-medium text-slate-700 mb-1">Departamento</label>
+                                <select name="departamento" id="departamento" class="w-full px-4 py-2.5 border border-slate-200 rounded-xl text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500">
+                                    <option value="">Seleccione</option>
+                                    <?php foreach ($departamentos as $depa): ?>
+                                        <option value="<?php echo (string)$depa['depaid']; ?>"><?php echo htmlspecialchars($depa['departamento']); ?></option>
+                                    <?php endforeach; ?>
+                                </select>
+                            </div>
+                            <div>
+                                <label for="provincia" class="block text-sm font-medium text-slate-700 mb-1">Provincia</label>
+                                <select name="provincia" id="provincia" class="w-full px-4 py-2.5 border border-slate-200 rounded-xl text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500">
+                                    <option value="">Seleccione</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label for="distrito" class="block text-sm font-medium text-slate-700 mb-1">Distrito</label>
+                                <select name="distrito" id="distrito" class="w-full px-4 py-2.5 border border-slate-200 rounded-xl text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500">
+                                    <option value="">Seleccione</option>
+                                </select>
                             </div>
                         </div>
                         <div>
@@ -334,31 +356,141 @@
 </div>
 
 <script>
+    // Store initial departamentos for cascading
+    const departamentosData = <?php echo json_encode($departamentos); ?>;
+
     function openNewModal() {
-        document.getElementById('modalTitle').textContent = 'Nuevo Arrendatario';
+        document.getElementById('modalTitle').textContent = 'Registro de Arrendatario';
         document.getElementById('arrendatarioId').value = '';
-        document.getElementById('tipoDoc').value = 'DNI';
+        document.getElementById('tipoDoc').value = '';
         document.getElementById('numeroDoc').value = '';
+        document.getElementById('razonSocial').value = '';
         document.getElementById('apellidos').value = '';
         document.getElementById('nombres').value = '';
+        document.getElementById('departamento').value = '';
+        document.getElementById('provincia').innerHTML = '<option value="">Seleccione</option>';
+        document.getElementById('provincia').disabled = true;
+        document.getElementById('distrito').innerHTML = '<option value="">Seleccione</option>';
+        document.getElementById('distrito').disabled = true;
         document.getElementById('direccion').value = '';
         document.getElementById('estado').value = '1';
         document.getElementById('arrendatarioModal').classList.remove('hidden');
         document.getElementById('arrendatarioModal').style.display = 'flex';
     }
 
-    function openEditModal(id, tipoDoc, numeroDoc, apellidos, nombres, direccion, estado) {
+    function openEditModal(id, tipoDocId, numeroDoc, abreviatura, apellidos, nombres, razonSocial, direccion, depaId, provId, distId, estado) {
         document.getElementById('modalTitle').textContent = 'Editar Arrendatario';
         document.getElementById('arrendatarioId').value = id;
-        document.getElementById('tipoDoc').value = tipoDoc;
+        document.getElementById('tipoDoc').value = String(tipoDocId);
         document.getElementById('numeroDoc').value = numeroDoc;
-        document.getElementById('apellidos').value = apellidos;
-        document.getElementById('nombres').value = nombres;
-        document.getElementById('direccion').value = direccion;
+        document.getElementById('razonSocial').value = razonSocial || '';
+        document.getElementById('apellidos').value = apellidos || '';
+        document.getElementById('nombres').value = nombres || '';
+        document.getElementById('direccion').value = direccion || '';
         document.getElementById('estado').value = estado;
+        
+        // Set department and load provinces
+        if (depaId > 0) {
+            document.getElementById('departamento').value = String(depaId);
+            loadProvincias(depaId, provId);
+        } else {
+            document.getElementById('departamento').value = '';
+            document.getElementById('provincia').innerHTML = '<option value="">Seleccione</option>';
+            document.getElementById('provincia').disabled = true;
+            document.getElementById('distrito').innerHTML = '<option value="">Seleccione</option>';
+            document.getElementById('distrito').disabled = true;
+        }
+        
         document.getElementById('arrendatarioModal').classList.remove('hidden');
         document.getElementById('arrendatarioModal').style.display = 'flex';
     }
+
+    function loadProvincias(depaId, selectedProvId = null) {
+        const provinciaSelect = document.getElementById('provincia');
+        const distritoSelect = document.getElementById('distrito');
+        
+        if (!depaId || depaId === '') {
+            provinciaSelect.innerHTML = '<option value="">Seleccione</option>';
+            provinciaSelect.disabled = true;
+            distritoSelect.innerHTML = '<option value="">Seleccione</option>';
+            distritoSelect.disabled = true;
+            return;
+        }
+
+        // Build query string for API call
+        const formData = new FormData();
+        formData.append('action', 'getProvincias');
+        formData.append('depaid', depaId);
+
+        fetch('/api/arrendatario/ubigeo', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            let options = '<option value="">Seleccione</option>';
+            data.forEach(function(provincia) {
+                const selected = selectedProvId && String(provincia.provid) === String(selectedProvId) ? 'selected' : '';
+                options += `<option value="${provincia.provid}" ${selected}>${provincia.provincia}</option>`;
+            });
+            provinciaSelect.innerHTML = options;
+            provinciaSelect.disabled = false;
+            
+            // If we have a selected province, load distritos
+            if (selectedProvId) {
+                loadDistritos(selectedProvId);
+            } else {
+                distritoSelect.innerHTML = '<option value="">Seleccione</option>';
+                distritoSelect.disabled = true;
+            }
+        })
+        .catch(error => {
+            console.error('Error loading provinces:', error);
+            provinciaSelect.innerHTML = '<option value="">Error</option>';
+        });
+    }
+
+    function loadDistritos(provId, selectedDistId = null) {
+        const distritoSelect = document.getElementById('distrito');
+        
+        if (!provId || provId === '') {
+            distritoSelect.innerHTML = '<option value="">Seleccione</option>';
+            distritoSelect.disabled = true;
+            return;
+        }
+
+        const formData = new FormData();
+        formData.append('action', 'getDistritos');
+        formData.append('provid', provId);
+
+        fetch('/api/arrendatario/ubigeo', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            let options = '<option value="">Seleccione</option>';
+            data.forEach(function(distrito) {
+                const selected = selectedDistId && String(distrito.distid) === String(selectedDistId) ? 'selected' : '';
+                options += `<option value="${distrito.distid}" ${selected}>${distrito.distrito}</option>`;
+            });
+            distritoSelect.innerHTML = options;
+            distritoSelect.disabled = false;
+        })
+        .catch(error => {
+            console.error('Error loading districts:', error);
+            distritoSelect.innerHTML = '<option value="">Error</option>';
+        });
+    }
+
+    // Event listeners for cascading dropdowns
+    document.getElementById('departamento').addEventListener('change', function() {
+        loadProvincias(this.value);
+    });
+
+    document.getElementById('provincia').addEventListener('change', function() {
+        loadDistritos(this.value);
+    });
 
     function closeModal() {
         document.getElementById('arrendatarioModal').classList.add('hidden');
