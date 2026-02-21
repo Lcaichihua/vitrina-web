@@ -60,6 +60,8 @@ class MantenimientoController {
             $total_records = $model->getTotalRecords($filtroEstado, $search);
             $total_pages = ceil($total_records / $records_per_page);
             $puestosComerciales = $model->getPaginatedRecords($filtroEstado, $records_per_page, $offset, $search);
+            $tiposPuesto = $model->getTiposPuestoComercial();
+            $sucursales = $model->getSucursales();
         } catch (Exception $e) {
             error_log("Error al obtener puestos comerciales: " . $e->getMessage());
             $error = "No se pudieron cargar los puestos comerciales: " . $e->getMessage();
@@ -250,14 +252,14 @@ class MantenimientoController {
             exit;
         }
 
-        $id = isset($_POST['id']) ? (int)$_POST['id'] : null;
-        $tipoPuesto = trim($_POST['tipoPuesto'] ?? '');
-        $sucursal = trim($_POST['sucursal'] ?? '');
+        $id = isset($_POST['id']) ? (int)$_POST['id'] : 0;
+        $tipoPuesto = isset($_POST['tipoPuesto']) ? (int)$_POST['tipoPuesto'] : 0;
+        $sucursal = isset($_POST['sucursal']) ? (int)$_POST['sucursal'] : 0;
         $interior = trim($_POST['interior'] ?? '');
         $observacion = trim($_POST['observacion'] ?? '');
         $estado = isset($_POST['estado']) ? (int)$_POST['estado'] : 1;
 
-        if (empty($tipoPuesto) || empty($sucursal) || empty($interior)) {
+        if ($tipoPuesto <= 0 || $sucursal <= 0 || empty($interior)) {
             $_SESSION['error'] = 'Los campos tipo puesto, sucursal e interior son requeridos';
             header('Location: /mantenimiento/puesto_comercial');
             exit;

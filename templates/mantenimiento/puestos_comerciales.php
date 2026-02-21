@@ -154,7 +154,7 @@
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap">
                                         <div class="flex items-center justify-center gap-2">
-                                            <button class="p-2 text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors" title="Editar" onclick="openEditModal(<?php echo $puesto['id_puesto_comercial']; ?>, '<?php echo htmlspecialchars($puesto['tipoPuesto']); ?>', '<?php echo htmlspecialchars($puesto['sucursal']); ?>', '<?php echo htmlspecialchars($puesto['interior']); ?>', '<?php echo htmlspecialchars($puesto['observacion']); ?>', <?php echo $puesto['estado']; ?>)">
+                                            <button class="p-2 text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors" title="Editar" onclick="openEditModal(<?php echo $puesto['id_puesto_comercial']; ?>, <?php echo $puesto['id_tipo_puesto_comercial']; ?>, <?php echo $puesto['sucursalid']; ?>, '<?php echo htmlspecialchars($puesto['interior']); ?>', '<?php echo htmlspecialchars($puesto['observacion']); ?>', <?php echo $puesto['estado']; ?>)">
                                                 <i class="fa-solid fa-pen-to-square"></i>
                                             </button>
                                             <button class="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors" title="Eliminar" onclick="confirmDelete(<?php echo $puesto['id_puesto_comercial']; ?>, '<?php echo htmlspecialchars($puesto['interior']); ?>')">
@@ -218,11 +218,21 @@
                     <div class="space-y-4">
                         <div>
                             <label for="tipoPuesto" class="block text-sm font-medium text-slate-700 mb-1">Tipo de Puesto</label>
-                            <input type="text" name="tipoPuesto" id="tipoPuesto" required class="w-full px-4 py-2.5 border border-slate-200 rounded-xl text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500" placeholder="Tipo de puesto">
+                            <select name="tipoPuesto" id="tipoPuesto" required class="w-full px-4 py-2.5 border border-slate-200 rounded-xl text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500">
+                                <option value="">Seleccione tipo de puesto</option>
+                                <?php foreach ($tiposPuesto as $tipo): ?>
+                                    <option value="<?php echo $tipo['id_tipo_puesto_comercial']; ?>"><?php echo htmlspecialchars($tipo['descripcion']); ?></option>
+                                <?php endforeach; ?>
+                            </select>
                         </div>
                         <div>
                             <label for="sucursal" class="block text-sm font-medium text-slate-700 mb-1">Sucursal</label>
-                            <input type="text" name="sucursal" id="sucursal" required class="w-full px-4 py-2.5 border border-slate-200 rounded-xl text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500" placeholder="Sucursal">
+                            <select name="sucursal" id="sucursal" required class="w-full px-4 py-2.5 border border-slate-200 rounded-xl text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500">
+                                <option value="">Seleccione sucursal</option>
+                                <?php foreach ($sucursales as $suc): ?>
+                                    <option value="<?php echo $suc['id_sucursal']; ?>"><?php echo htmlspecialchars($suc['descripcion']); ?></option>
+                                <?php endforeach; ?>
+                            </select>
                         </div>
                         <div>
                             <label for="interior" class="block text-sm font-medium text-slate-700 mb-1">Interior/Número</label>
@@ -291,11 +301,11 @@
         document.getElementById('puestoModal').style.display = 'flex';
     }
 
-    function openEditModal(id, tipoPuesto, sucursal, interior, observacion, estado) {
+    function openEditModal(id, tipoPuestoId, sucursalId, interior, observacion, estado) {
         document.getElementById('modalTitle').textContent = 'Editar Puesto Comercial';
         document.getElementById('puestoId').value = id;
-        document.getElementById('tipoPuesto').value = tipoPuesto;
-        document.getElementById('sucursal').value = sucursal;
+        document.getElementById('tipoPuesto').value = tipoPuestoId;
+        document.getElementById('sucursal').value = sucursalId;
         document.getElementById('interior').value = interior;
         document.getElementById('observacion').value = observacion;
         document.getElementById('estado').value = estado;
