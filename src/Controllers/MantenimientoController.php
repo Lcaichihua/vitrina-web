@@ -185,6 +185,51 @@ class MantenimientoController {
         require_once __DIR__ . '/../../templates/contratos/listado.php';
     }
 
+    public function contratoGuardar() {
+        if (!isset($_SESSION['user_id'])) {
+            header('Content-Type: application/json');
+            echo json_encode(['success' => false, 'error' => 'No autenticado']);
+            exit;
+        }
+
+        header('Content-Type: application/json');
+
+        try {
+            $model = new Contrato();
+
+            $data = [
+                'numero_contrato' => $model->getSiguienteNumeroContrato(),
+                'id_arrendatario' => (int)$_POST['id_arrendatario'],
+                'id_arrendador' => !empty($_POST['id_arrendador']) ? (int)$_POST['id_arrendador'] : null,
+                'id_sucursal' => (int)$_POST['id_sucursal'],
+                'id_tipo_contrato' => (int)$_POST['id_tipo_contrato'],
+                'inicio_contrato' => $_POST['inicio_contrato'],
+                'fin_contrato' => $_POST['fin_contrato'],
+                'nro_meses' => (int)$_POST['nro_meses'],
+                'tipo_moneda' => $_POST['tipo_moneda'] ?? 'SOLES',
+                'observaciones' => $_POST['observaciones'] ?? '',
+                'activo' => 1,
+                'estado' => 'ACTIVO',
+                'porcentaje_renta_variable' => isset($_POST['chk_renta_variable']) ? (float)$_POST['porcentaje_renta_variable'] : 0,
+                'importe_contraprestacion' => (float)$_POST['importe_contraprestacion'],
+                'economato_tipo' => $_POST['economato_tipo'] ?? 'FIJO',
+                'importe_economato' => (float)$_POST['importe_economato'],
+                'espacios_economato' => (int)$_POST['espacios_economato'],
+                'importe_pie_ingreso' => isset($_POST['chk_pie_ingreso']) ? (float)$_POST['importe_pie_ingreso'] : 0,
+                'importe_canastilla' => (float)$_POST['importe_canastilla'],
+                'puestos' => isset($_POST['puestos']) ? array_map('intval', $_POST['puestos']) : []
+            ];
+
+            $idContrato = $model->create($data);
+
+            echo json_encode(['success' => true, 'id_contrato' => $idContrato]);
+        } catch (Exception $e) {
+            error_log("Error al guardar contrato: " . $e->getMessage());
+            echo json_encode(['success' => false, 'error' => $e->getMessage()]);
+        }
+        exit;
+    }
+
     // ============ TIPO PUESTO COMERCIAL ============
     public function tipoPuestoGuardar() {
         if (!isset($_SESSION['user_id'])) {

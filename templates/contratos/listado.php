@@ -291,7 +291,7 @@
                         Arrendatario
                     </button>
                     <button onclick="switchTab('tab-otro')" id="tab-btn-otro" class="tab-btn px-6 py-3 text-sm font-medium text-slate-500 hover:text-slate-700">
-                        Otro
+                        Detalles
                     </button>
                 </div>
             </div>
@@ -388,11 +388,163 @@
                     </div>
                 </div>
 
-                <!-- Tab 3: Otro (pendiente) -->
+                <!-- Tab 3: Contrato Details -->
                 <div id="tab-otro" class="tab-content hidden">
-                    <div class="text-center py-8 text-slate-500">
-                        <i class="fa-solid fa-clock text-4xl mb-4 text-slate-300"></i>
-                        <p>Contenido del tercer tab pendiente...</p>
+                    <div class="space-y-5">
+                        <!-- Fechas del Contrato -->
+                        <div class="bg-gradient-to-br from-blue-50 to-indigo-50 border border-blue-100 p-5 rounded-xl">
+                            <div class="flex items-center gap-2 mb-4">
+                                <i class="fa-regular fa-calendar-days text-blue-600"></i>
+                                <h4 class="text-base font-semibold text-slate-800">Fechas del Contrato</h4>
+                            </div>
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                <div>
+                                    <label class="block text-xs font-medium text-slate-600 mb-1.5">Inicio de Contrato</label>
+                                    <div class="relative">
+                                        <input type="date" id="inicioContrato" class="w-full px-4 py-2.5 pl-10 bg-white border border-slate-200 rounded-xl text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500">
+                                        <i class="fa-regular fa-calendar absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"></i>
+                                    </div>
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-medium text-slate-600 mb-1.5">Fin de Contrato</label>
+                                    <div class="relative">
+                                        <input type="date" id="finContrato" disabled class="w-full px-4 py-2.5 pl-10 bg-slate-100 border border-slate-200 rounded-xl text-sm text-slate-400">
+                                        <i class="fa-regular fa-calendar-xmark absolute left-3 top-1/2 -translate-y-1/2 text-slate-300"></i>
+                                    </div>
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-medium text-slate-600 mb-1.5">Número de meses</label>
+                                    <div class="relative">
+                                        <input type="number" id="nroMeses" value="1" min="1" class="w-full px-4 py-2.5 pl-10 bg-white border border-slate-200 rounded-xl text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500">
+                                        <i class="fa-solid fa-layer-group absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Two Column Layout for Options -->
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                            <!-- PIE de Ingreso -->
+                            <div class="bg-gradient-to-br from-emerald-50 to-teal-50 border border-emerald-100 p-5 rounded-xl">
+                                <div class="flex items-center gap-2 mb-4">
+                                    <i class="fa-solid fa-money-bill-wave text-emerald-600"></i>
+                                    <h4 class="text-base font-semibold text-slate-800">PIE de Ingreso</h4>
+                                </div>
+                                <div class="space-y-3">
+                                    <label class="flex items-center gap-3 cursor-pointer group">
+                                        <div class="relative">
+                                            <input type="checkbox" id="chkPieIngreso" class="sr-only peer">
+                                            <div class="w-11 h-6 bg-slate-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-emerald-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-500"></div>
+                                        </div>
+                                        <span class="text-sm font-medium text-slate-700 group-hover:text-emerald-600 transition-colors">¿Con PIE de ingreso?</span>
+                                    </label>
+                                    <div>
+                                        <label class="block text-xs font-medium text-slate-600 mb-1.5">Importe por PIE de Ingreso (USD)</label>
+                                        <div class="relative">
+                                            <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 font-medium">$</span>
+                                            <input type="text" id="importePieIngreso" value="0.00" disabled class="w-full px-4 py-2.5 pl-8 bg-slate-100 border border-slate-200 rounded-xl text-sm text-slate-400">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Renta Variable -->
+                            <div class="bg-gradient-to-br from-amber-50 to-orange-50 border border-amber-100 p-5 rounded-xl">
+                                <div class="flex items-center gap-2 mb-4">
+                                    <i class="fa-solid fa-chart-line text-amber-600"></i>
+                                    <h4 class="text-base font-semibold text-slate-800">Renta Variable</h4>
+                                </div>
+                                <div class="space-y-3">
+                                    <label class="flex items-center gap-3 cursor-pointer group">
+                                        <div class="relative">
+                                            <input type="checkbox" id="chkRentaVariable" class="sr-only peer">
+                                            <div class="w-11 h-6 bg-slate-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-amber-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-amber-500"></div>
+                                        </div>
+                                        <span class="text-sm font-medium text-slate-700 group-hover:text-amber-600 transition-colors">¿Renta Variable?</span>
+                                    </label>
+                                    <div>
+                                        <label class="block text-xs font-medium text-slate-600 mb-1.5">Porcentaje (%)</label>
+                                        <div class="flex items-center border border-slate-200 rounded-xl overflow-hidden bg-slate-100 opacity-60" id="rentaVariableContainer">
+                                            <button type="button" onclick="adjustRentaVariable(-1)" class="px-4 py-2.5 bg-white text-slate-600 hover:bg-slate-50 border-r border-slate-200 transition-colors">
+                                                <i class="fa-solid fa-minus"></i>
+                                            </button>
+                                            <input type="number" id="porcentajeRentaVariable" value="0" min="0" readonly class="flex-1 px-2 py-2.5 text-center bg-transparent border-x border-slate-200 text-sm font-semibold text-slate-700">
+                                            <button type="button" onclick="adjustRentaVariable(1)" class="px-4 py-2.5 bg-white text-slate-600 hover:bg-slate-50 border-l border-slate-200 transition-colors">
+                                                <i class="fa-solid fa-plus"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Economato -->
+                        <div class="bg-gradient-to-br from-violet-50 to-purple-50 border border-violet-100 p-5 rounded-xl">
+                            <div class="flex items-center gap-2 mb-4">
+                                <i class="fa-solid fa-store text-violet-600"></i>
+                                <h4 class="text-base font-semibold text-slate-800">Economato</h4>
+                            </div>
+                            <div class="space-y-4">
+                                <div class="flex items-center gap-4">
+                                    <label class="flex items-center gap-2 cursor-pointer group">
+                                        <input type="radio" name="tipoEconomato" value="FIJO" id="rbEconomatoFijo" class="w-4 h-4 text-violet-600 border-slate-300 focus:ring-violet-500">
+                                        <span class="text-sm font-medium text-slate-700 group-hover:text-violet-600">Fijo</span>
+                                    </label>
+                                    <label class="flex items-center gap-2 cursor-pointer group">
+                                        <input type="radio" name="tipoEconomato" value="VARIABLE" id="rbEconomatoVariable" class="w-4 h-4 text-violet-600 border-slate-300 focus:ring-violet-500">
+                                        <span class="text-sm font-medium text-slate-700 group-hover:text-violet-600">Variable</span>
+                                    </label>
+                                </div>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div>
+                                        <label class="block text-xs font-medium text-slate-600 mb-1.5">Espacios para economato</label>
+                                        <div class="relative">
+                                            <i class="fa-solid fa-box-open absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"></i>
+                                            <input type="number" id="espaciosEconomato" value="0" min="0" disabled class="w-full px-4 py-2.5 pl-10 bg-slate-100 border border-slate-200 rounded-xl text-sm text-slate-400">
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <label class="block text-xs font-medium text-slate-600 mb-1.5">Importe economato fijo (SOLES)</label>
+                                        <div class="relative">
+                                            <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 font-medium">S/</span>
+                                            <input type="text" id="importeEconomato" value="0.00" disabled class="w-full px-4 py-2.5 pl-8 bg-slate-100 border border-slate-200 rounded-xl text-sm text-slate-400">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Canasta y Contraprestación -->
+                        <div class="bg-gradient-to-br from-rose-50 to-pink-50 border border-rose-100 p-5 rounded-xl">
+                            <div class="flex items-center gap-2 mb-4">
+                                <i class="fa-solid fa-basket-shopping text-rose-600"></i>
+                                <h4 class="text-base font-semibold text-slate-800">Canasta y Contraprestación</h4>
+                            </div>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-xs font-medium text-slate-600 mb-1.5">Importe por Canastilla (USD)</label>
+                                    <div class="relative">
+                                        <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 font-medium">$</span>
+                                        <input type="text" id="importeCanastilla" value="0.00" disabled class="w-full px-4 py-2.5 pl-8 bg-slate-100 border border-slate-200 rounded-xl text-sm text-slate-400">
+                                    </div>
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-medium text-slate-600 mb-1.5">Importe de Contraprestación (USD)</label>
+                                    <div class="relative">
+                                        <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 font-medium">$</span>
+                                        <input type="text" id="importeContraprestacion" value="0.00" class="w-full px-4 py-2.5 pl-8 bg-white border border-slate-200 rounded-xl text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Observaciones -->
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 mb-2">
+                                <i class="fa-regular fa-comment-dots mr-2 text-slate-400"></i>Observaciones
+                            </label>
+                            <textarea id="observaciones" rows="3" class="w-full px-4 py-3 bg-white border border-slate-200 rounded-xl text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500" placeholder="Agregar observaciones del contrato..."></textarea>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -402,7 +554,7 @@
                 <button onclick="closeNuevoContratoModal()" class="px-4 py-2 bg-slate-100 text-slate-700 font-medium rounded-xl hover:bg-slate-200 transition-colors">
                     Cancelar
                 </button>
-                <button class="px-4 py-2 bg-blue-600 text-white font-medium rounded-xl hover:bg-blue-700 transition-colors">
+                <button onclick="guardarContrato()" id="btnGuardarContrato" class="px-4 py-2 bg-blue-600 text-white font-medium rounded-xl hover:bg-blue-700 transition-colors">
                     Guardar
                 </button>
             </div>
@@ -524,6 +676,53 @@ let selectedPuestos = [];
 let selectedArrendatarioId = null;
 
 function openNuevoContratoModal() {
+    // Set default dates to today
+    const today = new Date();
+    const todayStr = today.toISOString().split('T')[0];
+    const inicioContrato = document.getElementById('inicioContrato');
+    const finContrato = document.getElementById('finContrato');
+    
+    inicioContrato.value = todayStr;
+    finContrato.value = todayStr;
+    
+    // Reset all third tab fields
+    document.getElementById('nroMeses').value = '1';
+    document.getElementById('chkPieIngreso').checked = false;
+    document.getElementById('importePieIngreso').value = '0.00';
+    document.getElementById('importePieIngreso').disabled = true;
+    document.getElementById('importePieIngreso').classList.add('bg-slate-100', 'text-slate-400');
+    document.getElementById('importePieIngreso').classList.remove('bg-white', 'text-slate-700');
+    
+    document.getElementById('chkRentaVariable').checked = false;
+    document.getElementById('porcentajeRentaVariable').value = '0';
+    document.getElementById('rentaVariableContainer').classList.add('opacity-60');
+    document.getElementById('porcentajeRentaVariable').disabled = true;
+    
+    document.getElementById('rbEconomatoFijo').checked = false;
+    document.getElementById('rbEconomatoVariable').checked = false;
+    document.getElementById('espaciosEconomato').value = '0';
+    document.getElementById('espaciosEconomato').disabled = true;
+    document.getElementById('espaciosEconomato').classList.add('bg-slate-100', 'text-slate-400');
+    document.getElementById('espaciosEconomato').classList.remove('bg-white', 'text-slate-700');
+    document.getElementById('importeEconomato').value = '0.00';
+    document.getElementById('importeEconomato').disabled = true;
+    document.getElementById('importeEconomato').classList.add('bg-slate-100', 'text-slate-400');
+    document.getElementById('importeEconomato').classList.remove('bg-white', 'text-slate-700');
+    
+    document.getElementById('importeCanastilla').value = '0.00';
+    document.getElementById('importeCanastilla').disabled = true;
+    document.getElementById('importeCanastilla').classList.add('bg-slate-100', 'text-slate-400');
+    document.getElementById('importeCanastilla').classList.remove('bg-white', 'text-slate-700');
+    document.getElementById('importeContraprestacion').value = '0.00';
+    document.getElementById('importeContraprestacion').disabled = false;
+    document.getElementById('importeContraprestacion').classList.remove('bg-slate-100', 'text-slate-400');
+    document.getElementById('importeContraprestacion').classList.add('bg-white', 'text-slate-700');
+    
+    document.getElementById('observaciones').value = '';
+    
+    // Calculate initial end date
+    calculateFinContrato();
+    
     document.getElementById('nuevoContratoModal').classList.remove('hidden');
     document.getElementById('nuevoContratoModal').style.display = 'flex';
 }
@@ -573,6 +772,152 @@ function closeAlertModal() {
     document.getElementById('alertModal').classList.add('hidden');
     document.getElementById('alertModal').style.display = 'none';
 }
+
+// Third Tab Functions - Contract Details
+function calculateFinContrato() {
+    const inicioContrato = document.getElementById('inicioContrato');
+    const finContrato = document.getElementById('finContrato');
+    const nroMeses = document.getElementById('nroMeses');
+    
+    if (!inicioContrato.value || !nroMeses.value || nroMeses.value < 1) {
+        return;
+    }
+    
+    const startDate = new Date(inicioContrato.value);
+    const months = parseInt(nroMeses.value) || 0;
+    
+    // Calculate end date: start date + months - 1 day
+    const endDate = new Date(startDate);
+    endDate.setMonth(endDate.getMonth() + months);
+    endDate.setDate(endDate.getDate() - 1);
+    
+    // Format to yyyy-MM-dd
+    const year = endDate.getFullYear();
+    const month = String(endDate.getMonth() + 1).padStart(2, '0');
+    const day = String(endDate.getDate()).padStart(2, '0');
+    finContrato.value = `${year}-${month}-${day}`;
+}
+
+function adjustRentaVariable(delta) {
+    const input = document.getElementById('porcentajeRentaVariable');
+    let value = parseInt(input.value) || 0;
+    value = Math.max(0, value + delta);
+    input.value = value;
+}
+
+// Event Listeners for Third Tab
+document.addEventListener('DOMContentLoaded', function() {
+    // Inicio Contrato change - recalculate fin contrato
+    document.getElementById('inicioContrato').addEventListener('change', calculateFinContrato);
+    
+    // Numero de meses change - recalculate fin contrato
+    document.getElementById('nroMeses').addEventListener('input', calculateFinContrato);
+    
+    // PIE Ingreso checkbox
+    document.getElementById('chkPieIngreso').addEventListener('change', function() {
+        const importePie = document.getElementById('importePieIngreso');
+        if (this.checked) {
+            importePie.disabled = false;
+            importePie.value = '0.00';
+            importePie.classList.remove('bg-slate-100', 'text-slate-400');
+            importePie.classList.add('bg-white', 'text-slate-700');
+            importePie.focus();
+        } else {
+            importePie.disabled = true;
+            importePie.value = '0.00';
+            importePie.classList.add('bg-slate-100', 'text-slate-400');
+            importePie.classList.remove('bg-white', 'text-slate-700');
+        }
+    });
+    
+    // Renta Variable checkbox
+    document.getElementById('chkRentaVariable').addEventListener('change', function() {
+        const porcentaje = document.getElementById('porcentajeRentaVariable');
+        const rentaVariableContainer = document.getElementById('rentaVariableContainer');
+        const importeCanastilla = document.getElementById('importeCanastilla');
+        const importeContraprestacion = document.getElementById('importeContraprestacion');
+        const importeEconomato = document.getElementById('importeEconomato');
+        
+        if (this.checked) {
+            // Enable percentage spinner
+            porcentaje.disabled = false;
+            rentaVariableContainer.classList.remove('opacity-60');
+            porcentaje.value = '0';
+            
+            // Enable canastilla, disable contraprestacion and economato
+            importeCanastilla.disabled = false;
+            importeCanastilla.value = '0.00';
+            importeCanastilla.classList.remove('bg-slate-100', 'text-slate-400');
+            importeCanastilla.classList.add('bg-white', 'text-slate-700');
+            
+            importeContraprestacion.disabled = true;
+            importeContraprestacion.value = '0.00';
+            importeContraprestacion.classList.add('bg-slate-100', 'text-slate-400');
+            importeContraprestacion.classList.remove('bg-white', 'text-slate-700');
+            
+            // Also disable economato fixed when renta variable is checked
+            importeEconomato.disabled = true;
+            importeEconomato.value = '0.00';
+            importeEconomato.classList.add('bg-slate-100', 'text-slate-400');
+            importeEconomato.classList.remove('bg-white', 'text-slate-700');
+        } else {
+            // Disable percentage spinner
+            porcentaje.disabled = true;
+            rentaVariableContainer.classList.add('opacity-60');
+            porcentaje.value = '0';
+            
+            // Disable canastilla, enable contraprestacion
+            importeCanastilla.disabled = true;
+            importeCanastilla.value = '0.00';
+            importeCanastilla.classList.add('bg-slate-100', 'text-slate-400');
+            importeCanastilla.classList.remove('bg-white', 'text-slate-700');
+            
+            importeContraprestacion.disabled = false;
+            importeContraprestacion.value = '0.00';
+            importeContraprestacion.classList.remove('bg-slate-100', 'text-slate-400');
+            importeContraprestacion.classList.add('bg-white', 'text-slate-700');
+        }
+    });
+    
+    // Economato radio buttons
+    document.getElementById('rbEconomatoFijo').addEventListener('change', function() {
+        const espaciosEconomato = document.getElementById('espaciosEconomato');
+        const importeEconomato = document.getElementById('importeEconomato');
+        
+        if (this.checked) {
+            // Enable importe economato, disable espacios
+            espaciosEconomato.disabled = true;
+            espaciosEconomato.value = '0';
+            espaciosEconomato.classList.add('bg-slate-100', 'text-slate-400');
+            espaciosEconomato.classList.remove('bg-white', 'text-slate-700');
+            
+            importeEconomato.disabled = false;
+            importeEconomato.value = '0.00';
+            importeEconomato.classList.remove('bg-slate-100', 'text-slate-400');
+            importeEconomato.classList.add('bg-white', 'text-slate-700');
+            importeEconomato.focus();
+        }
+    });
+    
+    document.getElementById('rbEconomatoVariable').addEventListener('change', function() {
+        const espaciosEconomato = document.getElementById('espaciosEconomato');
+        const importeEconomato = document.getElementById('importeEconomato');
+        
+        if (this.checked) {
+            // Enable espacios economato, disable importe
+            espaciosEconomato.disabled = false;
+            espaciosEconomato.value = '0';
+            espaciosEconomato.classList.remove('bg-slate-100', 'text-slate-400');
+            espaciosEconomato.classList.add('bg-white', 'text-slate-700');
+            espaciosEconomato.focus();
+            
+            importeEconomato.disabled = true;
+            importeEconomato.value = '0.00';
+            importeEconomato.classList.add('bg-slate-100', 'text-slate-400');
+            importeEconomato.classList.remove('bg-white', 'text-slate-700');
+        }
+    });
+});
 
 function buscarPuestos() {
     const sucursalId = document.getElementById('sucursalSelect').value;
@@ -796,6 +1141,110 @@ function seleccionarArrendatario() {
         .catch(err => {
             showAlert('Error', 'Error de conexión', 'error');
         });
+}
+
+function guardarContrato() {
+    const btn = document.getElementById('btnGuardarContrato');
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin mr-2"></i>Guardando...';
+
+    const id_sucursal = document.getElementById('sucursalSelect').value;
+    const id_tipo_contrato = document.getElementById('tipoContratoSelect').value;
+    const id_arrendatario = document.getElementById('codigoArrendatario').value;
+    const inicio_contrato = document.getElementById('inicioContrato').value;
+    const fin_contrato = document.getElementById('finContrato').value;
+    const nro_meses = document.getElementById('nroMeses').value;
+    const observaciones = document.getElementById('observaciones').value;
+
+    if (!id_sucursal) {
+        showAlert('Alerta', 'Seleccione una sucursal', 'warning');
+        btn.disabled = false;
+        btn.innerHTML = 'Guardar';
+        return;
+    }
+
+    if (!id_tipo_contrato) {
+        showAlert('Alerta', 'Seleccione un tipo de contrato', 'warning');
+        btn.disabled = false;
+        btn.innerHTML = 'Guardar';
+        return;
+    }
+
+    if (!id_arrendatario || id_arrendatario === '0000000') {
+        showAlert('Alerta', 'Seleccione un arrendatario', 'warning');
+        btn.disabled = false;
+        btn.innerHTML = 'Guardar';
+        return;
+    }
+
+    if (!inicio_contrato) {
+        showAlert('Alerta', 'Ingrese la fecha de inicio del contrato', 'warning');
+        btn.disabled = false;
+        btn.innerHTML = 'Guardar';
+        return;
+    }
+
+    if (selectedPuestos.length === 0) {
+        showAlert('Alerta', 'Seleccione al menos un puesto comercial', 'warning');
+        btn.disabled = false;
+        btn.innerHTML = 'Guardar';
+        return;
+    }
+
+    const formData = new FormData();
+    formData.append('id_sucursal', id_sucursal);
+    formData.append('id_tipo_contrato', id_tipo_contrato);
+    formData.append('id_arrendatario', id_arrendatario.replace(/^0+/, ''));
+    formData.append('inicio_contrato', inicio_contrato);
+    formData.append('fin_contrato', fin_contrato);
+    formData.append('nro_meses', nro_meses);
+    formData.append('observaciones', observaciones);
+    formData.append('tipo_moneda', 'SOLES');
+
+    // Checkboxes
+    formData.append('chk_pie_ingreso', document.getElementById('chkPieIngreso').checked ? '1' : '0');
+    formData.append('chk_renta_variable', document.getElementById('chkRentaVariable').checked ? '1' : '0');
+
+    // Values from third tab
+    formData.append('importe_pie_ingreso', document.getElementById('importePieIngreso').value.replace(/,/g, '') || '0');
+    formData.append('porcentaje_renta_variable', document.getElementById('porcentajeRentaVariable').value || '0');
+    formData.append('importe_canastilla', document.getElementById('importeCanastilla').value.replace(/,/g, '') || '0');
+    formData.append('importe_contraprestacion', document.getElementById('importeContraprestacion').value.replace(/,/g, '') || '0');
+
+    // Economato
+    const economatoTipo = document.querySelector('input[name="tipoEconomato"]:checked')?.value || 'FIJO';
+    formData.append('economato_tipo', economatoTipo);
+    formData.append('importe_economato', document.getElementById('importeEconomato').value.replace(/,/g, '') || '0');
+    formData.append('espacios_economato', document.getElementById('espaciosEconomato').value || '0');
+
+    // Puestos
+    selectedPuestos.forEach(puestoId => {
+        formData.append('puestos[]', puestoId);
+    });
+
+    fetch('/contratos/guardar', {
+        method: 'POST',
+        body: formData
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.success) {
+            showAlert('Éxito', 'Contrato guardado correctamente', 'success');
+            setTimeout(() => {
+                closeNuevoContratoModal();
+                window.location.reload();
+            }, 1500);
+        } else {
+            showAlert('Error', data.error || 'Error al guardar el contrato', 'error');
+        }
+    })
+    .catch(err => {
+        showAlert('Error', 'Error de conexión', 'error');
+    })
+    .finally(() => {
+        btn.disabled = false;
+        btn.innerHTML = 'Guardar';
+    });
 }
 
 // Enter key for search

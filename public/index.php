@@ -87,6 +87,16 @@ switch ($uri) {
         $controller->contratos();
         break;
 
+    case '/contratos/guardar':
+        if (!isset($_SESSION['user_id'])) {
+            header('Content-Type: application/json');
+            echo json_encode(['success' => false, 'error' => 'No autenticado']);
+            exit;
+        }
+        $controller = new MantenimientoController();
+        $controller->contratoGuardar();
+        break;
+
     // ============ RUTAS CRUD ============
     case '/mantenimiento/tipo_puesto/guardar':
         if (!isset($_SESSION['user_id'])) {

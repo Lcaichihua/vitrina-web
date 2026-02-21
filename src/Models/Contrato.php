@@ -211,4 +211,110 @@ class Contrato {
             return [];
         }
     }
+
+    public function create(array $data): int {
+        $this->pdo->beginTransaction();
+        try {
+            $idEmpresa = (int)Globales::$o_id_empresa;
+            $usuario = $_SESSION['username'] ?? 'system';
+            $now = date('Y-m-d H:i:s');
+
+            $sql = "INSERT INTO wptvxhei_ventas.CONTRATO (
+                id_empresa, numero_contrato, id_arrendador, id_arrendatario, 
+                id_sucursal, id_tipo_contrato, inicio_contrato, fin_contrato,
+                tipo_moneda, observaciones, estado, usuing, fechaing, activo, nro_meses
+            ) VALUES (
+                :id_empresa, :numero_contrato, :id_arrendador, :id_arrendatario,
+                :id_sucursal, :id_tipo_contrato, :inicio_contrato, :fin_contrato,
+                :tipo_moneda, :observaciones, :estado, :usuing, :fechaing, :activo, :nro_meses
+            )";
+
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->execute([
+                ':id_empresa' => $idEmpresa,
+                ':numero_contrato' => $data['numero_contrato'],
+                ':id_arrendador' => $data['id_arrendador'] ?? null,
+                ':id_arrendatario' => $data['id_arrendatario'],
+                ':id_sucursal' => $data['id_sucursal'],
+                ':id_tipo_contrato' => $data['id_tipo_contrato'],
+                ':inicio_contrato' => $data['inicio_contrato'],
+                ':fin_contrato' => $data['fin_contrato'],
+                ':tipo_moneda' => $data['tipo_moneda'] ?? 'SOLES',
+                ':observaciones' => $data['observaciones'] ?? '',
+                ':estado' => $data['estado'] ?? 'ACTIVO',
+                ':usuing' => $usuario,
+                ':fechaing' => $now,
+                ':activo' => $data['activo'] ?? 1,
+                ':nro_meses' => $data['nro_meses'] ?? 1
+            ]);
+
+            $idContrato = (int)$this->pdo->lastInsertId();
+
+            $sqlCondicion = "INSERT INTO wptvxhei_ventas.CONTRATO_CONDICION (
+                id_contrato, vigencia_inicio, vigencia_fin, porcentaje_renta_var,
+                importe_contraprest, economato_tipo, importe_economato,
+                importe_pie_ingreso, importe_canastilla, espacios_economato,
+                origen, id_origen
+            ) VALUES (
+                :id_contrato, :vigencia_inicio, :vigencia_fin, :porcentaje_renta_var,
+                :importe_contraprest, :economato_tipo, :importe_economato,
+                :importe_pie_ingreso, :importe_canastilla, :espacios_economato,
+                :origen, :id_origen
+            )";
+
+            $stmtCondicion = $this->pdo->prepare($sqlCondicion);
+            $stmtCondicion->execute([
+                ':id_contrato' => $idContrato,
+                ':vigencia_inicio' => $data['inicio_contrato'],
+                ':vigencia_fin' => $data['fin_contrato'],
+                ':porcentaje_renta_var' => $data['porcentaje_renta_variable'] ?? 0,
+                ':importe_contraprest' => $data['importe_contraprestacion'] ?? 0,
+                ':economato_tipo' => $data['economato_tipo'] ?? 'FIJO',
+                ':importe_economato' => $data['importe_economato'] ?? 0,
+                ':importe_pie_ingreso' => $data['importe_pie_ingreso'] ?? 0,
+                ':importe_canastilla' => $data['importe_canastilla'] ?? 0,
+                ':espacios_economato' => $data['espacios_economato'] ?? 0,
+                ':origen' => 'WEB',
+                ':id_origen' => $idContrato
+            ]);
+
+            if (!empty($data['puestos'])) {
+                $sqlPuesto = "INSERT INTO wptvxhei_ventas.CONTRATO_PUESTO (
+                    id_contrato, id_puesto_comercial, alta, origen, id_origen, estado
+                ) VALUES (
+                    :id_contrato, :id_puesto_comercial, :alta, :origen, :id_origen, 1
+                )";
+                $stmtPuesto = $this->pdo->prepare($sqlPuesto);
+
+                foreach ($data['puestos'] as $idPuesto) {
+                    $stmtPuesto->execute([
+                        ':id_contrato' => $idContrato,
+                        ':id_puesto_comercial' => $idPuesto,
+                        ':alta' => date('Y-m-d'),
+                        ':origen' => 'WEB',
+                        ':id_origen' => $idContrato
+                    ]);
+                }
+            }
+
+            $this->pdo->commit();
+            return $idContrato;
+        } catch (PDOException $e) {
+            $this->pdo->rollBack();
+            error_log("Error en Contrato::create: " . $e->getMessage());
+            throw new \Exception("Error al crear el contrato: " . $e->getMessage());
+        }
+    }
+
+    public function getSiguienteNumeroContrato(): string {
+        try {
+            $stmt = $this->pdo->query("SELECT MAX(CAST(numero_contrato AS UNSIGNED)) as max_num FROM wptvxhei_ventas.CONTRATO WHERE id_empresa = " . (int)Globales::$o_id_empresa);
+            $result = $stmt->fetch(PDO::FETCH_ASSOC);
+            $next = ($result && $result['max_num']) ? (int)$result['max_num'] + 1 : 1;
+            return str_pad($next, 8, '0', STR_PAD_LEFT);
+        } catch (PDOException $e) {
+            error_log("Error en Contrato::getSiguienteNumeroContrato: " . $e->getMessage());
+            return str_pad(1, 8, '0', STR_PAD_LEFT);
+        }
+    }
 }
